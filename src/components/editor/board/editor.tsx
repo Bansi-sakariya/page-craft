@@ -9,6 +9,8 @@ import MainHeader from "./header/main-header";
 import ElementsToolbox from "./tools/element-box";
 import SettingsPanel from "./tools/settings-panel";
 import Div from "../elements/basic/div";
+import H1 from "../elements/typography/h-one";
+import H2 from "../elements/typography/h-two";
 
 const EditorBoard = () => {
   const { device } = useContext(DeviceContext);
@@ -18,6 +20,8 @@ const EditorBoard = () => {
       resolver={{
         Root,
         Div,
+        H1,
+        H2
       }}
     >
       <MainHeader />
@@ -30,9 +34,7 @@ const EditorBoard = () => {
         >
           <Frame>
             <Element canvas is={Root} styles={""} data-cy="root-container">
-              <Element styles="p-3 border rounded-sm" is={Div} canvas>
-                
-              </Element>
+              <Element styles="p-3 border rounded-sm" is={Div} canvas></Element>
             </Element>
           </Frame>
         </div>

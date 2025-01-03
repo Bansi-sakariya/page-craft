@@ -7,3 +7,7 @@ export type DefaultElementProps = {
 };
 
 export type DivElProps = DefaultElementProps & {};
+
+export type HTagElProps = DefaultElementProps & {
+  title: string;
+};

@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import React, { useContext, useState } from "react";
 import { IoClose, IoSearch } from "react-icons/io5";
 import { DivPlaceholder } from "../../elements/basic/div";
+import { HOnePlaceholder } from "../../elements/typography/h-one";
+import { HTwoPlaceholder } from "../../elements/typography/h-two";
 
 const ElementsToolbox = () => {
   const { isOpen, setIsOpen } = useContext(InsertSidebarToggleContext);
@@ -94,6 +96,8 @@ const ElementsToolbox = () => {
             <div className="p-3">
               <div className="grid gap-3 grid-cols-4">
                 <DivPlaceholder />
+                <HOnePlaceholder />
+                <HTwoPlaceholder />
               </div>
             </div>
           </ScrollArea>
