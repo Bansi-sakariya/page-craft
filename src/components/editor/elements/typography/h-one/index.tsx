@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 import { HTagElProps } from "@/types/element";
 import { useEditor, useNode } from "@craftjs/core";
 import React from "react";
-import Placeholders from "../placeholders";
+import Placeholders from "../../placeholders";
 import { BsTypeH1 } from "react-icons/bs";
+import HOneSettings from "./settings";
 
 export const HOnePlaceholder = () => {
   const {
@@ -15,7 +16,17 @@ export const HOnePlaceholder = () => {
       ref={(ref) => {
         create(
           ref as HTMLElement,
-          <H1 title="Lorem Ipsum" styles="text-4xl font-bold"></H1>
+          <H1
+            title="Lorem Ipsum"
+            styles=""
+            cssProperties={{
+              fontFamily: "var(--font-poppins)",
+              fontSize: "40px",
+              fontWeight: "800",
+              height: "100%",
+              width: "100%",
+            }}
+          ></H1>
         );
       }}
       icon={<BsTypeH1 className="text-3xl" />}
@@ -49,5 +60,7 @@ H1.craft = {
   props: {
     styles: "text-6xl font-bold",
   },
-  related: {},
+  related: {
+    toolbar: HOneSettings,
+  },
 };

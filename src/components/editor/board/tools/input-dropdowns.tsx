@@ -20,7 +20,7 @@ interface InputDropDownsProps {
   height?: string;
   value?: string;
   customContent?: JSX.Element;
-  setValue?: Function;
+  setValue: Function;
 }
 
 const InputDropDowns = ({
@@ -39,7 +39,7 @@ const InputDropDowns = ({
             customContent
           ) : (
             <Button className="p-1 h-5 w-5 bg-white hover:bg-white text-black">
-              <ChevronDown size={20} />
+              {value ? <p className="">{value}</p> : <ChevronDown size={20} />}
             </Button>
           )}
         </DropdownMenuTrigger>
@@ -49,7 +49,11 @@ const InputDropDowns = ({
           <ScrollArea className={height}>
             {data?.map((el, index) => {
               return (
-                <DropdownMenuItem key={index + 1} className="cursor-pointer">
+                <DropdownMenuItem
+                  onClick={() => setValue(el?.value)}
+                  key={index + 1}
+                  className="cursor-pointer"
+                >
                   {el?.label}
                 </DropdownMenuItem>
               );

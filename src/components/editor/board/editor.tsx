@@ -21,7 +21,7 @@ const EditorBoard = () => {
         Root,
         Div,
         H1,
-        H2
+        H2,
       }}
     >
       <MainHeader />

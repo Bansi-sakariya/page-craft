@@ -17,6 +17,8 @@ interface CustomTabsProps {
   defaultValue: string;
   width?: string;
   tablistwidth?: string;
+  value: string;
+  setValue: (val: string) => void;
 }
 
 const CustomTabs = ({
@@ -24,6 +26,8 @@ const CustomTabs = ({
   defaultValue,
   width,
   tablistwidth,
+  value,
+  setValue,
 }: CustomTabsProps) => {
   return (
     <>
@@ -42,8 +46,10 @@ const CustomTabs = ({
                         ? "rounded-r-none border-r"
                         : index + 1 == data?.length
                         ? "rounded-l-none"
-                        : "rounded-none border-r"
+                        : "rounded-none border-r",
+                      value == el?.value ? "bg-primary text-white" : ""
                     )}
+                    onClick={() => setValue(el?.value)}
                     btnContent={el?.label}
                     side="top"
                     text={el?.value}
@@ -58,8 +64,10 @@ const CustomTabs = ({
                         ? "rounded-r-none border-r"
                         : index + 1 == data?.length
                         ? "rounded-l-none"
-                        : "rounded-none border-r"
+                        : "rounded-none border-r",
+                      value == el?.value ? "bg-primary text-white" : ""
                     )}
+                    onClick={() => setValue(el?.value)}
                   >
                     {el?.label}
                   </Button>

@@ -102,6 +102,7 @@ export const StyleSettings = () => {
         "layout",
         "self-layout",
         "position",
+        "display",
         "padding-margin",
         "text",
         "backgrounds",

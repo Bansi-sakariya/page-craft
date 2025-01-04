@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -80,18 +80,23 @@ import InputDropDowns from "./input-dropdowns";
 import CustomTabs from "./custom-tabs";
 import SettingsSidePannel from "./settings-side-panel";
 import StyleSettingsSidePannel from "./style-settings-panel";
+import { useEditor } from "@craftjs/core";
 
 const SettingsPanel = () => {
-  const [propertiesIsOpen, setPropertiesIsOpen] = useState(false);
-  const [defaultStyleIsOpen, setDefaultStyleIsOpen] = useState(false);
-  const [stylesIsOpen, setStyleIsOpen] = useState(false);
-
-  const [display, setDisplay] = useState("");
-  const [color, setColor] = useColor("#561ecb");
+  const { active, related } = useEditor((state, query) => {
+    // TODO: handle multiple selected elements
+    const currentlySelectedNodeId = query.getEvent("selected").first();
+    return {
+      active: currentlySelectedNodeId,
+      related:
+        currentlySelectedNodeId && state.nodes[currentlySelectedNodeId].related,
+    };
+  });
 
   return (
     <>
-      <SettingsSidePannel
+      {active && related.toolbar && React.createElement(related.toolbar)}
+      {/* <SettingsSidePannel
         title="Properties"
         isOpen={propertiesIsOpen}
         sidebarContent={
@@ -240,7 +245,7 @@ const SettingsPanel = () => {
             }}
           />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -48,16 +48,59 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import StyleInput from "./style-input";
+import { cn } from "@/lib/utils";
 
 type StyleDisplayProps = {
-  display: "block" | "inline-block" | "inline" | "none" | "flex" | "grid";
-  handleDisplay: Function;
-  handleFlex?: Function;
-  handleGrid?: Function;
-  handlePlaceItemAlign?: Function;
+  displayProp: "block" | "inline-block" | "inline" | "none" | "flex" | "grid";
+  alignPlaceItemsProp: string;
+  justifyPlaceItemsProp: string;
+  alignPlaceContentProp: string;
+  justifyPlaceContentProp: string;
+  overflowProp: string;
+  grid: {
+    rowProp: string;
+    columnProp: string;
+    autoFlowProp: string;
+    rowGapProp: string;
+    columnGapProp: string;
+  };
+  flex: {
+    flexDirectionProp: string;
+    flexWrapProp: string;
+  };
+  gridChild: {
+    rowStartProp: string;
+    columnStartProp: string;
+    rowEndProp: string;
+    columnEndProp: string;
+    alignSelfProp: string;
+    justifySelfProp: string;
+    orderProp: string;
+  };
+  flexChild: {
+    flexGrowProp: string;
+    flexShrinkProp: string;
+    basisProp: string;
+    alignSelfProp: string;
+    orderProp: string;
+  };
+  setProp: (key: string, val: string) => void;
 };
 
-const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
+const StyleDisplay = ({
+  displayProp,
+  setProp,
+  alignPlaceItemsProp,
+  justifyPlaceItemsProp,
+  alignPlaceContentProp,
+  justifyPlaceContentProp,
+  overflowProp,
+  grid,
+  flex,
+  gridChild,
+  flexChild,
+}: StyleDisplayProps) => {
   let displayArray = [
     {
       label: (
@@ -135,18 +178,18 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
         </AccordionTrigger>
         <AccordionContent className="p-2 text-xs">
           <FormSelectSearch
-            margin="mt-1"
+            margin="mt-1 mb-3"
             btnClassName="h-8 hover:bg-white"
             inputClassName="h-9"
             data={displayArray}
             emptyText="No keyword found"
             width="w-[250px]"
-            setValue={(val: string) => handleDisplay(val)}
-            value={display}
+            setValue={(val: string) => setProp("display", val)}
+            value={displayProp}
           />
-          {display == "flex" && (
+          {displayProp == "flex" && (
             <>
-              <p className="text-black text-xs font-bold ml-1 mb-1">
+              <p className="text-black text-xs font-bold ml-1 mb-1 mt-3">
                 Flex Flow
               </p>
               <div className="mb-3">
@@ -156,6 +199,11 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
                 <div className="flex items-center mt-1">
                   <div className="mr-2">
                     <CustomTabs
+                      value={flex.flexDirectionProp}
+                      setValue={(val: string) => {
+                        console.log(val);
+                        setProp("flexDirection", val);
+                      }}
                       data={[
                         {
                           label: (
@@ -166,7 +214,7 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
                               </span>
                             </>
                           ),
-                          value: "horizontal",
+                          value: "row",
                           padding: "px-2.5",
                         },
                         {
@@ -178,15 +226,36 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
                               </span>
                             </>
                           ),
-                          value: "vertical",
+                          value: "column",
                           padding: "px-2.5",
                         },
                       ]}
-                      defaultValue="horizontal"
+                      defaultValue="row"
                     />
                   </div>
                   <div>
-                    <Button className="h-8 w-8 p-0 bg-white text-slate-800 hover:bg-slate-200 text-xs">
+                    <Button
+                      onClick={() => {
+                        if (flex.flexDirectionProp == "row-reverse") {
+                          setProp("flexDirection", "row");
+                        } else if (flex.flexDirectionProp == "column-reverse") {
+                          setProp("flexDirection", "column");
+                        } else {
+                          if (flex.flexDirectionProp == "row") {
+                            setProp("flexDirection", "row-reverse");
+                          }
+                          if (flex.flexDirectionProp == "column") {
+                            setProp("flexDirection", "column-reverse");
+                          }
+                        }
+                      }}
+                      className={cn(
+                        "h-8 w-8 p-0 bg-white text-slate-800 hover:bg-slate-200 text-xs",
+                        flex.flexDirectionProp?.includes("reverse")
+                          ? "bg-primary text-white"
+                          : ""
+                      )}
+                    >
                       <LuArrowRightLeft size={15} />
                     </Button>
                   </div>
@@ -197,6 +266,8 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
                 <div className="flex items-center mt-1">
                   <div className="mr-2">
                     <CustomTabs
+                      value={flex.flexWrapProp}
+                      setValue={(val: string) => setProp("flexWrap", val)}
                       data={[
                         {
                           label: <>Wrap</>,
@@ -206,20 +277,34 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
                         },
                         {
                           label: <>No Wrap</>,
-                          value: "no-wrap",
+                          value: "nowrap",
                           padding: "px-2.5",
                           width: "w-[50%]",
                         },
                       ]}
                       width="w-[210px]"
                       tablistwidth="w-[100%]"
-                      defaultValue="wrap"
+                      defaultValue="nowrap"
                     />
                   </div>
                   <div>
                     <Button
-                      disabled
-                      className="h-8 w-8 p-0 bg-white text-slate-800 hover:bg-slate-200 text-xs"
+                      disabled={flex.flexWrapProp == "nowrap"}
+                      onClick={() => {
+                        if (flex.flexWrapProp == "wrap-reverse") {
+                          setProp("flexWrap", "wrap");
+                        } else {
+                          if (flex.flexWrapProp == "wrap") {
+                            setProp("flexWrap", "wrap-reverse");
+                          }
+                        }
+                      }}
+                      className={cn(
+                        "h-8 w-8 p-0 bg-white text-slate-800 hover:bg-slate-200 text-xs",
+                        flex.flexWrapProp?.includes("reverse")
+                          ? "bg-primary text-white"
+                          : ""
+                      )}
                     >
                       <LuArrowRightLeft size={15} />
                     </Button>
@@ -228,9 +313,11 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
               </div>
             </>
           )}
-          {display == "grid" && (
+          {displayProp == "grid" && (
             <>
-              <p className="text-black text-xs font-bold ml-1 mb-1">Grid</p>
+              <p className="text-black text-xs font-bold ml-1 mb-1 mt-3">
+                Grid
+              </p>
               <div className="mb-3">
                 <div className="flex items-center mb-3">
                   <div className="mr-2">
@@ -285,96 +372,106 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
                 <p className="text-black text-xs font-bold ml-1 mb-1">Gap</p>
                 <div className="flex items-center mb-3">
                   <div className="mr-2">
-                    <Label className="text-gray-500 text-xs ml-1">Row</Label>
-                    <div className="mr-2 relative group">
-                      <Input placeholder="" className="h-8" />
-                      <div className="absolute top-[22px] right-1 flex items-center justify-center">
-                        <InputDropDowns
-                          data={[
-                            {
-                              label: <>px</>,
-                              value: "px",
-                            },
-                            {
-                              label: <>%</>,
-                              value: "%",
-                            },
-                            {
-                              label: <>em</>,
-                              value: "em",
-                            },
-                            {
-                              label: <>rem</>,
-                              value: "rem",
-                            },
-                            {
-                              label: <>vh</>,
-                              value: "vh",
-                            },
-                            {
-                              label: <>vw</>,
-                              value: "vw",
-                            },
-                          ]}
-                        />
-                      </div>
-                    </div>
+                    <StyleInput
+                      title="Row"
+                      type="text"
+                      handleVal={(val: string) => setProp("rowGap", val)}
+                      mainval=""
+                      dropdown
+                      data={[
+                        {
+                          label: <>px</>,
+                          value: "px",
+                        },
+                        {
+                          label: <>%</>,
+                          value: "%",
+                        },
+                        {
+                          label: <>em</>,
+                          value: "em",
+                        },
+                        {
+                          label: <>rem</>,
+                          value: "rem",
+                        },
+                        {
+                          label: <>vh</>,
+                          value: "vh",
+                        },
+                        {
+                          label: <>vw</>,
+                          value: "vw",
+                        },
+                        {
+                          label: <>none</>,
+                          value: "auto",
+                        },
+                      ]}
+                    />
                   </div>
                   <div>
-                    <Label className="text-gray-500 text-xs ml-1">Column</Label>
-                    <div className="mr-2 relative group">
-                      <Input placeholder="" className="h-8" />
-                      <div className="absolute top-[22px] right-1 flex items-center justify-center">
-                        <InputDropDowns
-                          data={[
-                            {
-                              label: <>px</>,
-                              value: "px",
-                            },
-                            {
-                              label: <>%</>,
-                              value: "%",
-                            },
-                            {
-                              label: <>em</>,
-                              value: "em",
-                            },
-                            {
-                              label: <>rem</>,
-                              value: "rem",
-                            },
-                            {
-                              label: <>vh</>,
-                              value: "vh",
-                            },
-                            {
-                              label: <>vw</>,
-                              value: "vw",
-                            },
-                          ]}
-                        />
-                      </div>
+                    <div className="mr-2">
+                      <StyleInput
+                        title="Column"
+                        type="text"
+                        handleVal={(val: string) => setProp("rowGap", val)}
+                        mainval=""
+                        dropdown
+                        data={[
+                          {
+                            label: <>px</>,
+                            value: "px",
+                          },
+                          {
+                            label: <>%</>,
+                            value: "%",
+                          },
+                          {
+                            label: <>em</>,
+                            value: "em",
+                          },
+                          {
+                            label: <>rem</>,
+                            value: "rem",
+                          },
+                          {
+                            label: <>vh</>,
+                            value: "vh",
+                          },
+                          {
+                            label: <>vw</>,
+                            value: "vw",
+                          },
+                          {
+                            label: <>none</>,
+                            value: "auto",
+                          },
+                        ]}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </>
           )}
-          {(display != "block" ||
-            display != "inline-block" ||
-            display != "inline" ||
-            display != "none") && (
-            <p className="text-black text-xs font-bold ml-1 mb-1">
+          {(displayProp != "block" ||
+            displayProp != "inline-block" ||
+            displayProp != "inline" ||
+            displayProp != "none") && (
+            <p className="text-black text-xs font-bold ml-1 mb-1 mt-3">
               Place Items
             </p>
           )}
-          {(display != "block" ||
-            display != "inline-block" ||
-            display != "inline" ||
-            display != "none") && (
+          {(displayProp != "block" ||
+            displayProp != "inline-block" ||
+            displayProp != "inline" ||
+            displayProp != "none") && (
             <div className="mb-3">
               <Label className="text-gray-500 text-xs ml-1">Align</Label>
               <CustomTabs
+                value={alignPlaceItemsProp}
+                setValue={(val: string) => setProp("alignItems", val)}
                 data={[
                   {
                     label: (
@@ -425,14 +522,16 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
               />
             </div>
           )}
-          {(display != "block" ||
-            display != "inline-block" ||
-            display != "inline" ||
-            display != "flex" ||
-            display != "none") && (
+          {(displayProp != "block" ||
+            displayProp != "inline-block" ||
+            displayProp != "inline" ||
+            displayProp != "flex" ||
+            displayProp != "none") && (
             <div className="mb-3">
               <Label className="text-gray-500 text-xs ml-1">Justify</Label>
               <CustomTabs
+                value={justifyPlaceItemsProp}
+                setValue={(val: string) => setProp("justifyItems", val)}
                 data={[
                   {
                     label: (
@@ -484,15 +583,17 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
               />
             </div>
           )}
-          {display != "none" && (
+          {displayProp != "none" && (
             <p className="text-black text-xs font-bold ml-1 mb-1">
               Place Contents
             </p>
           )}
-          {display != "none" && (
+          {displayProp != "none" && (
             <div className="mb-3">
               <Label className="text-gray-500 text-xs ml-1">Align</Label>
               <CustomTabs
+                value={alignPlaceContentProp}
+                setValue={(val: string) => setProp("alignContent", val)}
                 data={[
                   {
                     label: (
@@ -567,13 +668,15 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
               />
             </div>
           )}
-          {(display != "block" ||
-            display != "inline-block" ||
-            display != "inline" ||
-            display != "none") && (
+          {(displayProp != "block" ||
+            displayProp != "inline-block" ||
+            displayProp != "inline" ||
+            displayProp != "none") && (
             <div className="mb-3">
               <Label className="text-gray-500 text-xs ml-1">Justify</Label>
               <CustomTabs
+                value={justifyPlaceContentProp}
+                setValue={(val: string) => setProp("justifyContent", val)}
                 data={[
                   {
                     label: (
@@ -651,6 +754,8 @@ const StyleDisplay = ({ display, handleDisplay }: StyleDisplayProps) => {
           <p className="text-black text-xs font-bold ml-1 mb-1">Overflow</p>
           <div className="mb-3">
             <CustomTabs
+              value={overflowProp}
+              setValue={(val: string) => setProp("overflow", val)}
               data={[
                 {
                   label: <IoEyeOutline size={15} className="font-bold" />,
