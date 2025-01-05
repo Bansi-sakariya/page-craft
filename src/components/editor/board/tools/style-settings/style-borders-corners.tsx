@@ -61,7 +61,7 @@ const StyleBordersCorners = ({
             <span>Borders</span>
             <Button
               onClick={() => setBorderWidthLock(!borderWidthLock)}
-              className="bg-transparent hover:bg-transparent h-6 w-6 p-0 text-gray-800"
+              className="h-6 w-6 p-1 bg-transparent text-gray-500 hover:bg-transparent"
             >
               {borderWidthLock ? (
                 <MdLock size={40} />
@@ -306,7 +306,7 @@ const StyleBordersCorners = ({
             <span>Corners</span>
             <Button
               onClick={() => setBorderCornerLock(!borderCornerLock)}
-              className="bg-transparent hover:bg-transparent h-6 w-6 p-0 text-gray-800"
+              className="h-6 w-6 p-1 bg-transparent text-gray-500 hover:bg-transparent"
             >
               {borderCornerLock ? (
                 <MdLock size={40} />
