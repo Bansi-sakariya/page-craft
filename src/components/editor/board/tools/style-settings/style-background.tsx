@@ -7,6 +7,16 @@ import InputDropDowns from '../input-dropdowns'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
 
+type StyleBackgroundProps = {
+  backgroundColorProp: string;
+  backgroundImageProp: string;
+  backgroundPositionProp: string;
+  backgroundRepeatProp: string;
+  backgroundSizeProp: string;
+  backgroundClipProp: string;
+  backgroundGradientProp: string;
+}
+
 const StyleBackground = () => {
   return (
     <AccordionItem value="backgrounds">
@@ -33,7 +43,7 @@ const StyleBackground = () => {
         />
       </div>
       <div className="mb-3 flex items-center">
-        <div className="mr-2">
+        <div className="mr-2 w-[49%]">
           <Label className="text-gray-500 text-xs ml-1">Bg. Position</Label>
           <div className="mt-1">
             <InputDropDowns
@@ -85,7 +95,7 @@ const StyleBackground = () => {
             />
           </div>
         </div>
-        <div className="">
+        <div className=" w-[49%]">
           <Label className="text-gray-500 text-xs ml-1">Bg. Repeat</Label>
           <div className="mt-1">
             <InputDropDowns
@@ -127,7 +137,7 @@ const StyleBackground = () => {
         </div>
       </div>
       <div className="flex items-center mb-3">
-        <div className="mr-2">
+        <div className="mr-2  w-[49%]">
           <Label className="text-gray-500 text-xs ml-1">
             Background Size
           </Label>
@@ -157,7 +167,7 @@ const StyleBackground = () => {
             />
           </div>
         </div>
-        <div>
+        <div className=' w-[49%]'>
           <Label className="text-gray-500 text-xs ml-1">
             Background Clip
           </Label>

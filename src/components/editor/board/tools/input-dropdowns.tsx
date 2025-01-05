@@ -39,7 +39,11 @@ const InputDropDowns = ({
             customContent
           ) : (
             <Button className="p-1 h-5 w-5 bg-white hover:bg-white text-black">
-              {value ? <p className="">{value}</p> : <ChevronDown size={20} />}
+              {value ? (
+                <p className="text-xs">{value}</p>
+              ) : (
+                <ChevronDown size={20} />
+              )}
             </Button>
           )}
         </DropdownMenuTrigger>

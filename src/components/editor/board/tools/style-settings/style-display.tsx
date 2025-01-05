@@ -168,7 +168,18 @@ const StyleDisplay = ({
       ),
       value: "none",
     },
-  ];
+  ]?.map((el) => {
+    if (displayProp?.includes(el?.value)) {
+      return {
+        ...el,
+        selected: true,
+      };
+    } else {
+      return {
+        ...el,
+      };
+    }
+  });
 
   return (
     <>
@@ -230,7 +241,7 @@ const StyleDisplay = ({
                           padding: "px-2.5",
                         },
                       ]}
-                      defaultValue="row"
+                      defaultValue={flex.flexDirectionProp}
                     />
                   </div>
                   <div>
@@ -284,7 +295,7 @@ const StyleDisplay = ({
                       ]}
                       width="w-[210px]"
                       tablistwidth="w-[100%]"
-                      defaultValue="nowrap"
+                      defaultValue={flex.flexWrapProp}
                     />
                   </div>
                   <div>
@@ -355,7 +366,7 @@ const StyleDisplay = ({
                           padding: "px-2.5",
                         },
                       ]}
-                      defaultValue="grid-flow-row"
+                      defaultValue={grid.autoFlowProp}
                     />
                   </div>
                   <div>
@@ -407,7 +418,18 @@ const StyleDisplay = ({
                           label: <>none</>,
                           value: "auto",
                         },
-                      ]}
+                      ]?.map((el) => {
+                        if (grid.rowGapProp?.includes(el?.value)) {
+                          return {
+                            ...el,
+                            selected: true,
+                          };
+                        } else {
+                          return {
+                            ...el,
+                          };
+                        }
+                      })}
                     />
                   </div>
                   <div>
@@ -415,7 +437,7 @@ const StyleDisplay = ({
                       <StyleInput
                         title="Column"
                         type="text"
-                        handleVal={(val: string) => setProp("rowGap", val)}
+                        handleVal={(val: string) => setProp("columnGap", val)}
                         mainval=""
                         dropdown
                         data={[
@@ -447,7 +469,18 @@ const StyleDisplay = ({
                             label: <>none</>,
                             value: "auto",
                           },
-                        ]}
+                        ]?.map((el) => {
+                          if (grid.columnGapProp?.includes(el?.value)) {
+                            return {
+                              ...el,
+                              selected: true,
+                            };
+                          } else {
+                            return {
+                              ...el,
+                            };
+                          }
+                        })}
                       />
                     </div>
                   </div>
@@ -516,7 +549,7 @@ const StyleDisplay = ({
                     tooltip: true,
                   },
                 ]}
-                defaultValue="start"
+                defaultValue={alignPlaceItemsProp}
                 width="w-[100%]"
                 tablistwidth="w-[100%]"
               />
@@ -577,7 +610,7 @@ const StyleDisplay = ({
                     tooltip: true,
                   },
                 ]}
-                defaultValue="start"
+                defaultValue={justifyPlaceItemsProp}
                 width="w-[100%]"
                 tablistwidth="w-[100%]"
               />
@@ -662,7 +695,7 @@ const StyleDisplay = ({
                     tooltip: true,
                   },
                 ]}
-                defaultValue="start"
+                defaultValue={alignPlaceContentProp}
                 width="w-[100%]"
                 tablistwidth="w-[100%]"
               />
@@ -745,7 +778,7 @@ const StyleDisplay = ({
                     tooltip: true,
                   },
                 ]}
-                defaultValue="start"
+                defaultValue={justifyPlaceContentProp}
                 width="w-[100%]"
                 tablistwidth="w-[100%]"
               />
@@ -782,7 +815,7 @@ const StyleDisplay = ({
                   tooltip: true,
                 },
               ]}
-              defaultValue="visible"
+              defaultValue={overflowProp}
               width="w-[100%]"
               tablistwidth="w-[100%]"
             />

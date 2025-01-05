@@ -1,5 +1,6 @@
 import TooltipButton from "@/components/common/TooltipButton";
 import SettingsSidePannel from "@/components/editor/board/tools/settings-side-panel";
+import StyleBackground from "@/components/editor/board/tools/style-settings/style-background";
 import StyleBordersCorners from "@/components/editor/board/tools/style-settings/style-borders-corners";
 import StyleDisplay from "@/components/editor/board/tools/style-settings/style-display";
 import StylePaddingMargin from "@/components/editor/board/tools/style-settings/style-padding-margin";
@@ -250,6 +251,8 @@ export const StyleSettings = ({
   nodeProps: any;
   setProp: (key: string, val: string) => void;
 }) => {
+  console.log("Node Props Properties: ", nodeProps?.cssProperties);
+
   return (
     <>
       <Accordion
@@ -368,8 +371,115 @@ export const StyleSettings = ({
           }
           setProp={(key: string, val: string) => setProp(key, val)}
         />
-        <StylePaddingMargin />
-        <StyleBordersCorners />
+
+        <StylePaddingMargin
+          paddingTopProp={
+            nodeProps?.cssProperties?.paddingTop
+              ? nodeProps?.cssProperties?.paddingTop
+              : ""
+          }
+          paddingBottomProp={
+            nodeProps?.cssProperties?.paddingBottom
+              ? nodeProps?.cssProperties?.paddingBottom
+              : ""
+          }
+          paddingLeftProp={
+            nodeProps?.cssProperties?.paddingLeft
+              ? nodeProps?.cssProperties?.paddingLeft
+              : ""
+          }
+          paddingRightProp={
+            nodeProps?.cssProperties?.paddingRight
+              ? nodeProps?.cssProperties?.paddingRight
+              : ""
+          }
+          marginTopProp={
+            nodeProps?.cssProperties?.marginTop
+              ? nodeProps?.cssProperties?.marginTop
+              : ""
+          }
+          marginBottomProp={
+            nodeProps?.cssProperties?.marginBottom
+              ? nodeProps?.cssProperties?.marginBottom
+              : ""
+          }
+          marginLeftProp={
+            nodeProps?.cssProperties?.marginLeft
+              ? nodeProps?.cssProperties?.marginLeft
+              : ""
+          }
+          marginRightProp={
+            nodeProps?.cssProperties?.marginRight
+              ? nodeProps?.cssProperties?.marginRight
+              : ""
+          }
+          setProp={(key: string, val: string) => setProp(key, val)}
+        />
+
+        <StyleBordersCorners
+          borderTopWidthProp={
+            nodeProps?.cssProperties?.borderTopWidth
+              ? nodeProps?.cssProperties?.borderTopWidth
+              : ""
+          }
+          borderTopColorProp={
+            nodeProps?.cssProperties?.borderTopColor
+              ? nodeProps?.cssProperties?.borderTopColor
+              : ""
+          }
+          borderRightWidthProp={
+            nodeProps?.cssProperties?.borderBottomWidth
+              ? nodeProps?.cssProperties?.borderBottomWidth
+              : ""
+          }
+          borderRightColorProp={
+            nodeProps?.cssProperties?.borderRightColor
+              ? nodeProps?.cssProperties?.borderRightColor
+              : ""
+          }
+          borderBottomWidthProp={
+            nodeProps?.cssProperties?.borderBottomWidth
+              ? nodeProps?.cssProperties?.borderBottomWidth
+              : ""
+          }
+          borderBottomColorProp={
+            nodeProps?.cssProperties?.borderBottomColor
+              ? nodeProps?.cssProperties?.borderBottomColor
+              : ""
+          }
+          borderLeftWidthProp={
+            nodeProps?.cssProperties?.borderLeftWidth
+              ? nodeProps?.cssProperties?.borderLeftWidth
+              : ""
+          }
+          borderLeftColorProp={
+            nodeProps?.cssProperties?.borderLeftColor
+              ? nodeProps?.cssProperties?.borderLeftColor
+              : ""
+          }
+          borderTopLeftProp={
+            nodeProps?.cssProperties?.borderTopLeftRadius
+              ? nodeProps?.cssProperties?.borderTopLeftRadius
+              : ""
+          }
+          borderTopRightProp={
+            nodeProps?.cssProperties?.borderTopRightRadius
+              ? nodeProps?.cssProperties?.borderTopRightRadius
+              : ""
+          }
+          borderBottomRightProp={
+            nodeProps?.cssProperties?.borderBottomRightRadius
+              ? nodeProps?.cssProperties?.borderBottomRightRadius
+              : ""
+          }
+          borderBottomLeftProp={
+            nodeProps?.cssProperties?.borderBottomLeftRadius
+              ? nodeProps?.cssProperties?.borderBottomLeftRadius
+              : ""
+          }
+          setProp={(key: string, val: string) => setProp(key, val)}
+        />
+
         <StyleDisplay
           displayProp={
             nodeProps?.cssProperties?.display
@@ -471,6 +581,9 @@ export const StyleSettings = ({
         <StyleSelfLayout
           parentdisplay={parentProps?.cssProperties?.display}
           display={nodeProps?.cssProperties?.display}
+        />
+        <StyleBackground 
+          
         />
       </Accordion>
     </>

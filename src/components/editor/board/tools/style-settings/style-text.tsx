@@ -250,7 +250,7 @@ const StyleText = ({
           </div>
           <div>
             <Label className="text-gray-500 text-xs ml-1">Font Style</Label>
-            <Tabs defaultValue="normal">
+            <Tabs defaultValue={fontStyleProp}>
               <TabsList className="p-0 h-8">
                 <TabsTrigger value="normal" asChild>
                   <TooltipButton
@@ -294,7 +294,7 @@ const StyleText = ({
         </div>
         <div className="relative mb-3">
           <Label className="text-gray-500 text-xs ml-1">Text Align</Label>
-          <Tabs defaultValue="left" className="w-[100%]">
+          <Tabs defaultValue={textAlignProp} className="w-[100%]">
             <TabsList className="w-[100%]">
               <TabsTrigger value="left" asChild>
                 <TooltipButton
@@ -395,7 +395,7 @@ const StyleText = ({
           </div>
           <div className="">
             <Label className="text-gray-500 text-xs ml-1">Text Transform</Label>
-            <Tabs defaultValue="left">
+            <Tabs defaultValue={textTransformProp}>
               <TabsList>
                 <TabsTrigger value="uppercase" asChild>
                   <TooltipButton
