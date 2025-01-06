@@ -15,7 +15,12 @@ export const HTwoPlaceholder = () => {
       ref={(ref) => {
         create(
           ref as HTMLElement,
-          <H2 title="Lorem Ipsum" styles="text-3xl font-bold"></H2>
+          <H2 title="Lorem Ipsum" styles="text-5xl font-bold" cssProperties={{
+            fontFamily: "var(--font-poppins)",
+            fontSize: "35px",
+            fontWeight: "800",
+            width: "100%",
+          }}></H2>
         );
       }}
       icon={<BsTypeH2 className="text-3xl" />}
@@ -47,7 +52,7 @@ export default H2;
 H2.craft = {
   displayName: "H-Two",
   props: {
-    styles: "text-3xl font-bold",
+    styles: "text-5xl font-bold",
   },
   related: {},
 };

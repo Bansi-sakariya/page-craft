@@ -23,7 +23,6 @@ export const HOnePlaceholder = () => {
               fontFamily: "var(--font-poppins)",
               fontSize: "40px",
               fontWeight: "800",
-              height: "100%",
               width: "100%",
             }}
           ></H1>

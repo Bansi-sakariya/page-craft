@@ -11,6 +11,10 @@ import { IoClose, IoSearch } from "react-icons/io5";
 import { DivPlaceholder } from "../../elements/basic/div";
 import { HOnePlaceholder } from "../../elements/typography/h-one";
 import { HTwoPlaceholder } from "../../elements/typography/h-two";
+import { HThreePlaceholder } from "../../elements/typography/h-three";
+import { HFourPlaceholder } from "../../elements/typography/h-four";
+import { HFivePlaceholder } from "../../elements/typography/h-five";
+import { HSixPlaceholder } from "../../elements/typography/h-six";
 
 const ElementsToolbox = () => {
   const { isOpen, setIsOpen } = useContext(InsertSidebarToggleContext);
@@ -94,10 +98,14 @@ const ElementsToolbox = () => {
         <div className="col-span-2">
           <ScrollArea className="h-[80vh]">
             <div className="p-3">
-              <div className="grid gap-3 grid-cols-4">
-                <DivPlaceholder />
+              <div className="grid gap-x-3 gap-y-3 grid-cols-4">
                 <HOnePlaceholder />
                 <HTwoPlaceholder />
+                <HThreePlaceholder />
+                <HFourPlaceholder />
+                <HFivePlaceholder />
+                <HSixPlaceholder />
+                <DivPlaceholder />
               </div>
             </div>
           </ScrollArea>

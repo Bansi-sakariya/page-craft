@@ -11,6 +11,10 @@ import SettingsPanel from "./tools/settings-panel";
 import Div from "../elements/basic/div";
 import H1 from "../elements/typography/h-one";
 import H2 from "../elements/typography/h-two";
+import H3 from "../elements/typography/h-three";
+import H4 from "../elements/typography/h-four";
+import H5 from "../elements/typography/h-five";
+import H6 from "../elements/typography/h-six";
 
 const EditorBoard = () => {
   const { device } = useContext(DeviceContext);
@@ -22,6 +26,10 @@ const EditorBoard = () => {
         Div,
         H1,
         H2,
+        H3,
+        H4,
+        H5,
+        H6
       }}
     >
       <MainHeader />

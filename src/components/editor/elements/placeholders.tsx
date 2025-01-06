@@ -13,7 +13,7 @@ const Placeholders = React.forwardRef<HTMLButtonElement, PlaceholderProps>(
         className="bg-white text-slate-700 border py-4 h-20 flex justify-center flex-col hover:bg-primary hover:text-white"
       >
         <span className="mb-1">{icon}</span>
-        <span className="font-bold">{text}</span>
+        <span className="font-bold text-xs">{text}</span>
       </Button>
     );
   }
