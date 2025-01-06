@@ -15,8 +15,27 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import StyleInput from "./style-input";
 
-const StylePosition = () => {
+type StylePositionProps = {
+  positionProp: string;
+  topProp: string;
+  bottomProp: string;
+  leftProp: string;
+  rightProp: string;
+  zIndexProp: string;
+  setProp: (key: string, val: string) => void;
+};
+
+const StylePosition = ({
+  positionProp,
+  topProp,
+  bottomProp,
+  leftProp,
+  rightProp,
+  zIndexProp,
+  setProp,
+}: StylePositionProps) => {
   return (
     <>
       <AccordionItem value="position">
@@ -25,6 +44,8 @@ const StylePosition = () => {
         </AccordionTrigger>
         <AccordionContent className="p-2 text-xs">
           <CustomTabs
+            value={positionProp}
+            setValue={(val: string) => setProp("position", val)}
             data={[
               {
                 label: <BoxSelect size={15} className="font-bold" />,
@@ -61,117 +82,186 @@ const StylePosition = () => {
             width="w-[100%]"
             tablistwidth="w-[100%]"
           />
-          <div className="flex justify-between mb-3">
+          <div className="flex justify-between my-3">
             <div className="mr-2 relative">
-              <Label className="text-gray-500 text-xs ml-1">Top</Label>
-              <Input placeholder="auto" className="h-8" />
-              <div className="absolute top-[26px] right-1 flex items-center justify-center">
-                <InputDropDowns
-                  data={[
-                    {
-                      label: <>px</>,
-                      value: "px",
-                    },
-                    {
-                      label: <>%</>,
-                      value: "%",
-                    },
-                    {
-                      label: <>em</>,
-                      value: "em",
-                    },
-                    {
-                      label: <>rem</>,
-                      value: "rem",
-                    },
-                  ]}
-                />
-              </div>
+              <StyleInput
+                title="Top"
+                type="text"
+                dropdown
+                mainval={topProp}
+                handleVal={(val: string) => setProp("top", val)}
+                data={[
+                  {
+                    label: <>px</>,
+                    value: "px",
+                  },
+                  {
+                    label: <>%</>,
+                    value: "%",
+                  },
+                  {
+                    label: <>em</>,
+                    value: "em",
+                  },
+                  {
+                    label: <>rem</>,
+                    value: "rem",
+                  },
+                  {
+                    label: <>none</>,
+                    value: "auto",
+                  },
+                ]?.map((el) => {
+                  if (topProp.includes(el?.value)) {
+                    return {
+                      ...el,
+                      selected: true,
+                    };
+                  } else {
+                    return {
+                      ...el,
+                    };
+                  }
+                })}
+              />
             </div>
             <div className="relative">
-              <Label className="text-gray-500 text-xs ml-1">Bottom</Label>
-              <Input placeholder="auto" className="h-8" />
-              <div className="absolute top-[26px] right-1 flex items-center justify-center">
-                <InputDropDowns
-                  data={[
-                    {
-                      label: <>px</>,
-                      value: "px",
-                    },
-                    {
-                      label: <>%</>,
-                      value: "%",
-                    },
-                    {
-                      label: <>em</>,
-                      value: "em",
-                    },
-                    {
-                      label: <>rem</>,
-                      value: "rem",
-                    },
-                  ]}
-                />
-              </div>
+              <StyleInput
+                title="Bottom"
+                type="text"
+                dropdown
+                mainval={bottomProp}
+                handleVal={(val: string) => setProp("bottom", val)}
+                data={[
+                  {
+                    label: <>px</>,
+                    value: "px",
+                  },
+                  {
+                    label: <>%</>,
+                    value: "%",
+                  },
+                  {
+                    label: <>em</>,
+                    value: "em",
+                  },
+                  {
+                    label: <>rem</>,
+                    value: "rem",
+                  },
+                  {
+                    label: <>none</>,
+                    value: "auto",
+                  },
+                ]?.map((el) => {
+                  if (bottomProp.includes(el?.value)) {
+                    return {
+                      ...el,
+                      selected: true,
+                    };
+                  } else {
+                    return {
+                      ...el,
+                    };
+                  }
+                })}
+              />
             </div>
           </div>
           <div className="flex justify-between mb-3">
             <div className="mr-2 relative">
-              <Label className="text-gray-500 text-xs ml-1">Left</Label>
-              <Input placeholder="auto" className="h-8" />
-              <div className="absolute top-[26px] right-1 flex items-center justify-center">
-                <InputDropDowns
-                  data={[
-                    {
-                      label: <>px</>,
-                      value: "px",
-                    },
-                    {
-                      label: <>%</>,
-                      value: "%",
-                    },
-                    {
-                      label: <>em</>,
-                      value: "em",
-                    },
-                    {
-                      label: <>rem</>,
-                      value: "rem",
-                    },
-                  ]}
-                />
-              </div>
+              <StyleInput
+                title="Right"
+                type="text"
+                dropdown
+                mainval={rightProp}
+                handleVal={(val: string) => setProp("right", val)}
+                data={[
+                  {
+                    label: <>px</>,
+                    value: "px",
+                  },
+                  {
+                    label: <>%</>,
+                    value: "%",
+                  },
+                  {
+                    label: <>em</>,
+                    value: "em",
+                  },
+                  {
+                    label: <>rem</>,
+                    value: "rem",
+                  },
+                  {
+                    label: <>none</>,
+                    value: "auto",
+                  },
+                ]?.map((el) => {
+                  if (rightProp.includes(el?.value)) {
+                    return {
+                      ...el,
+                      selected: true,
+                    };
+                  } else {
+                    return {
+                      ...el,
+                    };
+                  }
+                })}
+              />
             </div>
             <div className="relative">
-              <Label className="text-gray-500 text-xs ml-1">Right</Label>
-              <Input placeholder="auto" className="h-8" />
-              <div className="absolute top-[26px] right-1 flex items-center justify-center">
-                <InputDropDowns
-                  data={[
-                    {
-                      label: <>px</>,
-                      value: "px",
-                    },
-                    {
-                      label: <>%</>,
-                      value: "%",
-                    },
-                    {
-                      label: <>em</>,
-                      value: "em",
-                    },
-                    {
-                      label: <>rem</>,
-                      value: "rem",
-                    },
-                  ]}
-                />
-              </div>
+            <StyleInput
+                title="Right"
+                type="text"
+                dropdown
+                mainval={leftProp}
+                handleVal={(val: string) => setProp("left", val)}
+                data={[
+                  {
+                    label: <>px</>,
+                    value: "px",
+                  },
+                  {
+                    label: <>%</>,
+                    value: "%",
+                  },
+                  {
+                    label: <>em</>,
+                    value: "em",
+                  },
+                  {
+                    label: <>rem</>,
+                    value: "rem",
+                  },
+                  {
+                    label: <>none</>,
+                    value: "auto",
+                  },
+                ]?.map((el) => {
+                  if (leftProp.includes(el?.value)) {
+                    return {
+                      ...el,
+                      selected: true,
+                    };
+                  } else {
+                    return {
+                      ...el,
+                    };
+                  }
+                })}
+              />
             </div>
           </div>
           <div className="mb-3">
             <Label className="text-gray-500 text-xs ml-1">Z-Index</Label>
-            <Input placeholder="auto" className="h-8" />
+            <Input
+              placeholder="auto"
+              className="h-8"
+              value={zIndexProp}
+              onChange={(e) => setProp("zIndex", e.target.value)}
+            />
           </div>
         </AccordionContent>
       </AccordionItem>

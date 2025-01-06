@@ -4,6 +4,7 @@ import StyleBackground from "@/components/editor/board/tools/style-settings/styl
 import StyleBordersCorners from "@/components/editor/board/tools/style-settings/style-borders-corners";
 import StyleDisplay from "@/components/editor/board/tools/style-settings/style-display";
 import StylePaddingMargin from "@/components/editor/board/tools/style-settings/style-padding-margin";
+import StylePosition from "@/components/editor/board/tools/style-settings/style-position";
 import StyleSelfLayout from "@/components/editor/board/tools/style-settings/style-self-layout";
 import StyleSize from "@/components/editor/board/tools/style-settings/style-size";
 import StyleText from "@/components/editor/board/tools/style-settings/style-text";
@@ -581,9 +582,99 @@ export const StyleSettings = ({
         <StyleSelfLayout
           parentdisplay={parentProps?.cssProperties?.display}
           display={nodeProps?.cssProperties?.display}
+          flexGrowProp={
+            nodeProps?.cssProperties?.flexGrow
+              ? nodeProps?.cssProperties?.flexGrow
+              : ""
+          }
+          flexShrinkProp={
+            nodeProps?.cssProperties?.flexShrink
+              ? nodeProps?.cssProperties?.flexShrink
+              : ""
+          }
+          flexBasisProp={
+            nodeProps?.cssProperties?.flexBasis
+              ? nodeProps?.cssProperties?.flexBasis
+              : ""
+          }
+          alignSelfProp={
+            nodeProps?.cssProperties?.alignSelf
+              ? nodeProps?.cssProperties?.alignSelf
+              : ""
+          }
+          orderProp={
+            nodeProps?.cssProperties?.order
+              ? nodeProps?.cssProperties?.order
+              : ""
+          }
+          setProp={(key: string, val: string) => setProp(key, val)}
         />
-        <StyleBackground 
-          
+        <StyleBackground
+          backgroundImageProp={
+            nodeProps?.cssProperties?.backgroundImage
+              ? nodeProps?.cssProperties?.backgroundImage
+              : ""
+          }
+          backgroundColorProp={
+            nodeProps?.cssProperties?.backgroundColor
+              ? nodeProps?.cssProperties?.backgroundColor
+              : ""
+          }
+          backgroundPositionProp={
+            nodeProps?.cssProperties?.backgroundPosition
+              ? nodeProps?.cssProperties?.backgroundPosition
+              : ""
+          }
+          backgroundRepeatProp={
+            nodeProps?.cssProperties?.backgroundRepeat
+              ? nodeProps?.cssProperties?.backgroundRepeat
+              : ""
+          }
+          backgroundSizeProp={
+            nodeProps?.cssProperties?.backgroundSize
+              ? nodeProps?.cssProperties?.backgroundSize
+              : ""
+          }
+          backgroundClipProp={
+            nodeProps?.cssProperties?.backgroundClip
+              ? nodeProps?.cssProperties?.backgroundClip
+              : ""
+          }
+          backgroundGradientProp={
+            nodeProps?.cssProperties?.background
+              ? nodeProps?.cssProperties?.background
+              : ""
+          }
+          setProp={(key: string, val: string) => setProp(key, val)}
+        />
+        <StylePosition
+          positionProp={
+            nodeProps?.cssProperties?.position
+              ? nodeProps?.cssProperties?.position
+              : ""
+          }
+          topProp={
+            nodeProps?.cssProperties?.top ? nodeProps?.cssProperties?.top : ""
+          }
+          bottomProp={
+            nodeProps?.cssProperties?.bottom
+              ? nodeProps?.cssProperties?.bottom
+              : ""
+          }
+          leftProp={
+            nodeProps?.cssProperties?.left ? nodeProps?.cssProperties?.left : ""
+          }
+          rightProp={
+            nodeProps?.cssProperties?.right
+              ? nodeProps?.cssProperties?.right
+              : ""
+          }
+          zIndexProp={
+            nodeProps?.cssProperties?.zIndex
+              ? nodeProps?.cssProperties?.zIndex
+              : ""
+          }
+          setProp={(key: string, val: string) => setProp(key, val)}
         />
       </Accordion>
     </>
