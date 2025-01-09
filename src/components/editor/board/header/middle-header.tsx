@@ -320,7 +320,12 @@ const MiddleHeader = () => {
           type="number"
           className="h-6 w-14 px-1 text-xs text-white bg-transparent border rounded-md font-semibold"
           value={device.width}
-          onChange={(e) => setDeviceWidth(e.target.value)}
+          onChange={(e) => {
+            // let timeout = setTimeout(() => {
+              setDeviceWidth(parseInt(e.target.value));
+            // }, 2000);
+            // clearTimeout(timeout);
+          }}
         />
         <p className="text-slate-400 mx-1.5 font-bold">
           <IoClose />
@@ -329,7 +334,12 @@ const MiddleHeader = () => {
           type="number"
           className="h-6 w-14 px-1 text-xs text-white bg-transparent border rounded-md font-semibold"
           value={device.height}
-          onChange={(e) => setDeviceHeight(e.target.value)}
+          onChange={(e) => {
+            // let timeout = setTimeout(() => {
+              setDeviceHeight(parseInt(e.target.value));
+            // }, 2000);
+            // clearTimeout(timeout);
+          }}
         />
       </div>
     </div>

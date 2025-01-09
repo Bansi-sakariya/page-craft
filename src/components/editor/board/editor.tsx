@@ -26,9 +26,11 @@ const EditorBoard = () => {
 
   const { editorViewport } = useEditorViewPort();
 
+  console.log(device);
+
   return (
     <>
-      {editorViewport.selectedType == "laptop" && device.width >= 1024 && (
+      {(editorViewport.selectedType == "laptop" || device.width >= 1024) && (
         <Editor
           resolver={{
             Root,
@@ -68,90 +70,88 @@ const EditorBoard = () => {
           </div>
         </Editor>
       )}
-      {editorViewport.selectedType == "tablet" &&
-        device.width >= 500 &&
-        device.width < 1024 && (
-          <Editor
-            resolver={{
-              Root,
-              Div,
-              H1,
-              H2,
-              H3,
-              H4,
-              H5,
-              H6,
-            }}
-          >
-            <MainHeader />
-            <ElementsToolbox />
-            <SettingsPanel />
-            <div className="flex justify-center mt-[64px] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-              <TestBtn />
-              <div
-                className="p-4"
-                style={{ overflowX: device.width > 1024 ? "scroll" : "hidden" }}
+      {(editorViewport.selectedType == "tablet" ||
+        (device.width >= 500 && device.width < 1024)) && (
+        <Editor
+          resolver={{
+            Root,
+            Div,
+            H1,
+            H2,
+            H3,
+            H4,
+            H5,
+            H6,
+          }}
+        >
+          <MainHeader />
+          <ElementsToolbox />
+          <SettingsPanel />
+          <div className="flex justify-center mt-[64px] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+            {/* <TestBtn /> */}
+            <div
+              className="p-4"
+              style={{ overflowX: device.width > 1024 ? "scroll" : "hidden" }}
+            >
+              <Frame
+                data={
+                  editorViewport.state["tablet"] != null
+                    ? String(JSON.stringify(editorViewport.state["tablet"]))
+                    : ""
+                }
               >
-                <Frame
-                  data={
-                    editorViewport.state["tablet"] != null
-                      ? String(JSON.stringify(editorViewport.state["tablet"]))
-                      : ""
-                  }
-                >
-                  <Element
-                    canvas
-                    is={Root}
-                    styles={""}
-                    data-cy="root-container"
-                  ></Element>
-                </Frame>
-              </div>
+                <Element
+                  canvas
+                  is={Root}
+                  styles={""}
+                  data-cy="root-container"
+                ></Element>
+              </Frame>
             </div>
-          </Editor>
-        )}
-      {editorViewport.selectedType == "mobile" &&
-        device.width >= 300 &&
-        device.width < 500 && (
-          <Editor
-            resolver={{
-              Root,
-              Div,
-              H1,
-              H2,
-              H3,
-              H4,
-              H5,
-              H6,
-            }}
-          >
-            <MainHeader />
-            <ElementsToolbox />
-            <SettingsPanel />
-            <div className="flex justify-center mt-[64px] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-              <TestBtn />
-              <div
-                className="p-4"
-                style={{ overflowX: device.width > 1024 ? "scroll" : "hidden" }}
+          </div>
+        </Editor>
+      )}
+      {(editorViewport.selectedType == "mobile" ||
+        (device.width >= 0 && device.width < 500)) && (
+        <Editor
+          resolver={{
+            Root,
+            Div,
+            H1,
+            H2,
+            H3,
+            H4,
+            H5,
+            H6,
+          }}
+        >
+          <MainHeader />
+          <ElementsToolbox />
+          <SettingsPanel />
+          <div className="flex justify-center mt-[64px] bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
+            {/* <TestBtn /> */}
+            <div
+              className="p-4"
+              style={{ overflowX: device.width > 1024 ? "scroll" : "hidden" }}
+            >
+              <Frame
+                data={
+                  editorViewport.state["mobile"] != null
+                    ? String(JSON.stringify(editorViewport.state["mobile"]))
+                    : ""
+                }
               >
-                <Frame
-                  data={
-                    editorViewport.state["mobile"] != null
-                      ? String(JSON.stringify(editorViewport.state["mobile"]))
-                      : ""
-                  }
-                >
-                  <Element
-                    canvas
-                    is={Root}
-                    styles={""}
-                    data-cy="root-container"
-                  ></Element>
-                </Frame>
-              </div>
+                <Element
+                  canvas
+                  is={Root}
+                  styles={""}
+                  data-cy="root-container"
+                ></Element>
+              </Frame>
             </div>
-          </Editor>
-        )}
+          </div>
+        </Editor>
+      )}
     </>
   );
 };
