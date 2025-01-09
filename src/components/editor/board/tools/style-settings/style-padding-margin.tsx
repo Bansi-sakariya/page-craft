@@ -38,11 +38,6 @@ const StylePaddingMargin = ({
   const [paddingLocked, setPaddingLocked] = useState(true);
   const [marginLocked, setMarginLocked] = useState(true);
 
-  console.log(paddingTopProp);
-  console.log(paddingBottomProp);
-  console.log(paddingLeftProp);
-  console.log(paddingRightProp);
-
   return (
     <AccordionItem value={"padding-margin"}>
       <AccordionTrigger className="hover:no-underline bg-slate-200 p-2 px-4 border-t border-slate-300 text-xs">

@@ -39,8 +39,6 @@ const StyleInput = ({
   const [value, setValue] = useState("");
   const [dataVal, setDataVal] = useState<string>("px");
 
-  console.log("Style Input Vals: ", mainval);
-
   useEffect(() => {
     const dataValue = data?.find((el) => el?.selected == true)?.value as string;
     let mainValue = "";

@@ -22,6 +22,8 @@ import DeviceContext from "@/context/device-context";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineDesktopWindows, MdOutlineTabletMac } from "react-icons/md";
 import { FaMobileAlt } from "react-icons/fa";
+import { useEditorViewPort } from "@/provider/editor-viewport-provider";
+import { useEditor } from "@craftjs/core";
 
 const MiddleHeader = () => {
   const { device, setDeviceWidth, setDevice, setDeviceHeight, setDeviceScale } =
@@ -37,6 +39,138 @@ const MiddleHeader = () => {
     } else {
       setDeviceScale(val);
     }
+  };
+
+  const { editorViewport, setEditorViewport } = useEditorViewPort();
+  const { query } = useEditor();
+
+  const handleLaptop = () => {
+    // if (
+    //   editorViewport.state["laptop"] == null &&
+    //   Object.keys(query.getSerializedNodes()).length == 1
+    // ) {
+    //   if (editorViewport.state["tablet"] != null) {
+    //     setEditorViewport({
+    //       selectedType: "laptop",
+    //       state: {
+    //         laptop: editorViewport.state["tablet"],
+    //         tablet: editorViewport.state["tablet"],
+    //         mobile: editorViewport.state["mobile"],
+    //       },
+    //     });
+    //   }
+    //   if (editorViewport.state["mobile"] != null) {
+    //     setEditorViewport({
+    //       selectedType: "laptop",
+    //       state: {
+    //         laptop: editorViewport.state["mobile"],
+    //         tablet: editorViewport.state["tablet"],
+    //         mobile: editorViewport.state["mobile"],
+    //       },
+    //     });
+    //   }
+    // } else {
+    setEditorViewport({
+      selectedType: "laptop",
+      state: {
+        laptop: editorViewport.state["laptop"],
+        tablet:
+          editorViewport.selectedType == "tablet"
+            ? query.getSerializedNodes()
+            : editorViewport.state["tablet"],
+        mobile:
+          editorViewport.selectedType == "mobile"
+            ? query.getSerializedNodes()
+            : editorViewport.state["mobile"],
+      },
+    });
+    // }
+  };
+
+  const handleTablet = () => {
+    // if (
+    //   editorViewport.state["tablet"] == null &&
+    //   Object.keys(query.getSerializedNodes()).length == 1
+    // ) {
+    //   if (editorViewport.state["laptop"] != null) {
+    //     setEditorViewport({
+    //       selectedType: "tablet",
+    //       state: {
+    //         laptop: editorViewport.state["laptop"],
+    //         tablet: editorViewport.state["laptop"],
+    //         mobile: editorViewport.state["mobile"],
+    //       },
+    //     });
+    //   }
+    //   if (editorViewport.state["mobile"] != null) {
+    //     setEditorViewport({
+    //       selectedType: "tablet",
+    //       state: {
+    //         laptop: editorViewport.state["laptop"],
+    //         tablet: editorViewport.state["mobile"],
+    //         mobile: editorViewport.state["mobile"],
+    //       },
+    //     });
+    //   }
+    // } else {
+    setEditorViewport({
+      selectedType: "tablet",
+      state: {
+        laptop:
+          editorViewport.selectedType == "laptop"
+            ? query.getSerializedNodes()
+            : editorViewport.state["laptop"],
+        tablet: editorViewport.state["tablet"],
+        mobile:
+          editorViewport.selectedType == "mobile"
+            ? query.getSerializedNodes()
+            : editorViewport.state["mobile"],
+      },
+    });
+    // }
+  };
+
+  const handleMobile = () => {
+    // if (
+    //   editorViewport.state["mobile"] == null &&
+    //   Object.keys(query.getSerializedNodes()).length == 1
+    // ) {
+    //   if (editorViewport.state["laptop"] != null) {
+    //     setEditorViewport({
+    //       selectedType: "mobile",
+    //       state: {
+    //         laptop: editorViewport.state["laptop"],
+    //         tablet: editorViewport.state["tablet"],
+    //         mobile: editorViewport.state["laptop"],
+    //       },
+    //     });
+    //   }
+    //   if (editorViewport.state["tablet"] != null) {
+    //     setEditorViewport({
+    //       selectedType: "mobile",
+    //       state: {
+    //         laptop: editorViewport.state["laptop"],
+    //         tablet: editorViewport.state["tablet"],
+    //         mobile: editorViewport.state["tablet"],
+    //       },
+    //     });
+    //   }
+    // } else {
+    setEditorViewport({
+      selectedType: "mobile",
+      state: {
+        laptop:
+          editorViewport.selectedType == "laptop"
+            ? query.getSerializedNodes()
+            : editorViewport.state["laptop"],
+        tablet:
+          editorViewport.selectedType == "tablet"
+            ? query.getSerializedNodes()
+            : editorViewport.state["tablet"],
+        mobile: editorViewport.state["mobile"],
+      },
+    });
+    // }
   };
 
   return (
@@ -94,7 +228,7 @@ const MiddleHeader = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       <Separator orientation="vertical" className="bg-slate-600 h-4" />
-      <DropdownMenu>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger className="ml-2 mr-2" asChild>
           <Button className="flex justify-center bg-transparent hover:bg-slate-800 px-1 h-8">
             <span className="rounded-lg p-1.5 mr-0.5">
@@ -136,7 +270,51 @@ const MiddleHeader = () => {
             })}
           </ScrollArea>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
+      <div className="flex justify-between items-center">
+        <Button
+          className="bg-transparent px-1 ml-3 mr-1"
+          onClick={() => {
+            setDevice({
+              type: "Laptop Large",
+              width: 1280,
+              height: 800,
+              zoom: 1,
+            });
+            handleLaptop();
+          }}
+        >
+          <MdOutlineDesktopWindows className="h-6 w-6 text-white" />
+        </Button>
+        <Button
+          className="bg-transparent px-1 mx-1"
+          onClick={() => {
+            setDevice({
+              type: "iPad Air",
+              width: 820,
+              height: 1180,
+              zoom: 1,
+            });
+            handleTablet();
+          }}
+        >
+          <MdOutlineTabletMac className="h-5 w-5 text-white" />
+        </Button>
+        <Button
+          className="bg-transparent px-1 ml-1 mr-3"
+          onClick={() => {
+            setDevice({
+              type: "Pixel 7",
+              width: 412,
+              height: 915,
+              zoom: 1,
+            });
+            handleMobile();
+          }}
+        >
+          <FaMobileAlt className="h-5 w-5 text-white" />
+        </Button>
+      </div>
       <div className="flex justify-center items-center">
         <Input
           type="number"
