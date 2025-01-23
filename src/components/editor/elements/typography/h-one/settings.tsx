@@ -1,3 +1,5 @@
+"use client"
+
 import TooltipButton from "@/components/common/TooltipButton";
 import SettingsSidePannel from "@/components/editor/board/tools/settings-side-panel";
 import StyleBackground from "@/components/editor/board/tools/style-settings/style-background";
