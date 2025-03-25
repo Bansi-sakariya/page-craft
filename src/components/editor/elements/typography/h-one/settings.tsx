@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import TooltipButton from "@/components/common/TooltipButton";
 import SettingsSidePannel from "@/components/editor/board/tools/settings-side-panel";
@@ -13,9 +13,9 @@ import StyleText from "@/components/editor/board/tools/style-settings/style-text
 import {
   Accordion,
   AccordionContent,
-  AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { AccordionItem } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -24,8 +24,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
+import DeviceContext from "@/context/device-context";
 import { fontObj } from "@/lib/font";
 import { cn } from "@/lib/utils";
+import { useEditorViewPort } from "@/provider/editor-viewport-provider";
 import { useEditor, useNode } from "@craftjs/core";
 import React, { useContext, useEffect, useState } from "react";
 import { FaSliders } from "react-icons/fa6";
@@ -47,11 +49,33 @@ const HOneSettings = () => {
       }, {}),
     parent: node.data.parent,
   }));
+
   const { query } = useEditor();
   const parentProps = query.node(parent as string).get()?.data?.props;
+  const { device } = useContext(DeviceContext);
+  const { editorViewport } = useEditorViewPort();
+  let currentViewport: "laptop" | "tablet" | "mobile";
+  if (editorViewport.selectedType === "mobile") {
+    currentViewport = "mobile";
+  } else if (editorViewport.selectedType === "tablet") {
+    currentViewport = "tablet";
+  } else {
+    currentViewport = "laptop";
+  }
+
+  // Override based on actual device width
+  if (device.width >= 1024) {
+    currentViewport = "laptop";
+  } else if (device.width >= 500 && device.width < 1024) {
+    currentViewport = "tablet";
+  } else {
+    currentViewport = "mobile";
+  }
 
   return (
     <>
+
+
       <SettingsSidePannel
         title="Properties"
         isOpen={propertiesIsOpen}
@@ -94,13 +118,13 @@ const HOneSettings = () => {
                     <div className="flex justify-between mb-4">
                       <p className=" text-gray-500">width</p>
                       <p className=" text-black">
-                        {nodeProps?.cssProperties?.width}
+                        {nodeProps?.cssProperties?.[currentViewport]?.width}
                       </p>
                     </div>
                     <div className="flex justify-between mb-4">
                       <p className=" text-gray-500">height</p>
                       <p className=" text-black text-start">
-                        {nodeProps?.cssProperties?.height}
+                        {nodeProps?.cssProperties?.[currentViewport]?.height}
                       </p>
                     </div>
                   </div>
@@ -115,19 +139,24 @@ const HOneSettings = () => {
                     <div className="flex justify-between mb-4">
                       <p className=" text-gray-500">font-family</p>
                       <p className=" text-black">
-                        {fontObj[nodeProps?.cssProperties?.fontFamily]}
+                        {
+                          fontObj[
+                          nodeProps?.cssProperties?.[currentViewport]
+                            ?.fontFamily as keyof typeof fontObj
+                          ]
+                        }
                       </p>
                     </div>
                     <div className="flex justify-between mb-4">
                       <p className=" text-gray-500">font-size</p>
                       <p className=" text-black text-start">
-                        {nodeProps?.cssProperties?.fontSize}
+                        {nodeProps?.cssProperties?.[currentViewport]?.fontSize}
                       </p>
                     </div>
                     <div className="flex justify-between mb-4">
                       <p className=" text-gray-500">font-weight</p>
                       <p className=" text-black text-start">
-                        {nodeProps?.cssProperties?.fontWeight}
+                        {nodeProps?.cssProperties?.[currentViewport]?.fontWeight}
                       </p>
                     </div>
                   </div>
@@ -177,13 +206,23 @@ const HOneSettings = () => {
           </TabsList>
           <TabsContent value="styles">
             <ScrollArea className="h-[78vh] p-3">
+
               <StyleSettings
                 parentProps={parentProps}
-                nodeProps={nodeProps}
+                nodeProps={{
+                  ...nodeProps, // Ensure base styles exist, // Merge viewport-specific styles
+                }}
                 setProp={(key, val) =>
-                  setProp((prop) => (prop.cssProperties[key] = val), 500)
+                  setProp((prop) => {
+                    if (!prop.cssProperties) prop.cssProperties = {};
+                    if (!prop.cssProperties[currentViewport]) prop.cssProperties[currentViewport] = {};
+                    prop.cssProperties[currentViewport][key] = val;
+                  }, 500)
                 }
               />
+
+
+
             </ScrollArea>
           </TabsContent>
         </Tabs>
@@ -245,17 +284,51 @@ const HOneSettings = () => {
   );
 };
 
+
+
+
+export default HOneSettings;
+
+
+
+////////////////
+/////////////////
+/////////////
+//////////////////////
+
+
 export const StyleSettings = ({
   nodeProps,
   parentProps,
   setProp,
+  disabledItems = [],
 }: {
   parentProps: any;
   nodeProps: any;
   setProp: (key: string, val: string) => void;
+  disabledItems?: string[] | undefined;
 }) => {
-  console.log("Node Props Properties: ", nodeProps?.cssProperties);
+  const { device } = useContext(DeviceContext);
+  const { editorViewport } = useEditorViewPort();
+  let currentViewport: "laptop" | "tablet" | "mobile";
+  if (editorViewport.selectedType === "mobile") {
+    currentViewport = "mobile";
+  } else if (editorViewport.selectedType === "tablet") {
+    currentViewport = "tablet";
+  } else {
+    currentViewport = "laptop";
+  }
 
+  // Override based on actual device width
+  if (device.width >= 1024) {
+    currentViewport = "laptop";
+  } else if (device.width >= 500 && device.width < 1024) {
+    currentViewport = "tablet";
+  } else {
+    currentViewport = "mobile";
+  }
+  // console.log("CSS Properties abbbb:", nodeProps?.cssProperties);
+  // console.log("Viewport-Specific CSS Properties: abbbb", nodeProps?.cssProperties?.[currentViewport]);
   return (
     <>
       <Accordion
@@ -273,414 +346,472 @@ export const StyleSettings = ({
           "border-corners",
         ]}
       >
-        <StyleSize
-          widthProp={
-            nodeProps?.cssProperties?.width
-              ? nodeProps?.cssProperties?.width
-              : ""
-          }
-          heightProp={
-            nodeProps?.cssProperties?.height
-              ? nodeProps?.cssProperties?.height
-              : ""
-          }
-          minWidthProp={
-            nodeProps?.cssProperties?.minWidth
-              ? nodeProps?.cssProperties?.minWidth
-              : ""
-          }
-          minHeightProp={
-            nodeProps?.cssProperties?.minHeight
-              ? nodeProps?.cssProperties?.minHeight
-              : ""
-          }
-          maxWidthProp={
-            nodeProps?.cssProperties?.maxWidth
-              ? nodeProps?.cssProperties?.maxWidth
-              : ""
-          }
-          maxHeightProp={
-            nodeProps?.cssProperties?.maxHeight
-              ? nodeProps?.cssProperties?.maxHeight
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
-        <StyleText
-          fontFamilyProp={
-            nodeProps?.cssProperties?.fontFamily
-              ? nodeProps?.cssProperties?.fontFamily
-              : ""
-          }
-          fontSizeProp={
-            nodeProps?.cssProperties?.fontSize
-              ? nodeProps?.cssProperties?.fontSize
-              : ""
-          }
-          fontWeightProp={
-            nodeProps?.cssProperties?.fontWeight
-              ? nodeProps?.cssProperties?.fontWeight
-              : ""
-          }
-          fontStyleProp={
-            nodeProps?.cssProperties?.fontStyle
-              ? nodeProps?.cssProperties?.fontStyle
-              : ""
-          }
-          colorProp={
-            nodeProps?.cssProperties?.color
-              ? nodeProps?.cssProperties?.color
-              : ""
-          }
-          textAlignProp={
-            nodeProps?.cssProperties?.textAlign
-              ? nodeProps?.cssProperties?.textAlign
-              : ""
-          }
-          textTransformProp={
-            nodeProps?.cssProperties?.textTransform
-              ? nodeProps?.cssProperties?.textTransform
-              : ""
-          }
-          lineHeightProp={
-            nodeProps?.cssProperties?.lineHeight
-              ? nodeProps?.cssProperties?.lineHeight
-              : ""
-          }
-          letterSpaceProp={
-            nodeProps?.cssProperties?.letterSpacing
-              ? nodeProps?.cssProperties?.letterSpacing
-              : ""
-          }
-          textIndentProp={
-            nodeProps?.cssProperties?.textIndent
-              ? nodeProps?.cssProperties?.textIndent
-              : ""
-          }
-          decorationLineProp={
-            nodeProps?.cssProperties?.textDecorationLine
-              ? nodeProps?.cssProperties?.textDecorationLine
-              : ""
-          }
-          decorationColorProp={
-            nodeProps?.cssProperties?.textDecorationColor
-              ? nodeProps?.cssProperties?.textDecorationColor
-              : ""
-          }
-          decorationStyleProp={
-            nodeProps?.cssProperties?.textDecorationStyle
-              ? nodeProps?.cssProperties?.textDecorationStyle
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
+        {!disabledItems.includes("size") && (
+          <AccordionItem value="size" >
+            <StyleSize
+              widthProp={
+                nodeProps?.cssProperties?.width
+                  ? nodeProps?.cssProperties?.width
+                  : ""
+              }
+              heightProp={
+                nodeProps?.cssProperties?.height
+                  ? nodeProps?.cssProperties?.height
+                  : ""
+              }
+              minWidthProp={
+                nodeProps?.cssProperties?.minWidth
+                  ? nodeProps?.cssProperties?.minWidth
+                  : ""
+              }
+              minHeightProp={
+                nodeProps?.cssProperties?.minHeight
+                  ? nodeProps?.cssProperties?.minHeight
+                  : ""
+              }
+              maxWidthProp={
+                nodeProps?.cssProperties?.maxWidth
+                  ? nodeProps?.cssProperties?.maxWidth
+                  : ""
+              }
+              maxHeightProp={
+                nodeProps?.cssProperties?.maxHeight
+                  ? nodeProps?.cssProperties?.maxHeight
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("layout") && (
+          <AccordionItem value="layout">
+            <StyleText
+              fontFamilyProp={
+                nodeProps?.cssProperties?.[currentViewport]?.fontFamily
+                  ? nodeProps?.cssProperties?.[currentViewport]?.fontFamily
+                  : ""
+              }
+              fontSizeProp={
+                nodeProps?.cssProperties?.[currentViewport]?.fontSize
+                  ? nodeProps?.cssProperties?.[currentViewport]?.fontSize
+                  : ""
+              }
+              fontWeightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.fontWeight
+                  ? nodeProps?.cssProperties?.[currentViewport]?.fontWeight
+                  : ""
+              }
+              fontStyleProp={
+                nodeProps?.cssProperties?.[currentViewport]?.fontStyle
+                  ? nodeProps?.cssProperties?.[currentViewport]?.fontStyle
+                  : ""
+              }
+              colorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.color
+                  ? nodeProps?.cssProperties?.[currentViewport].color
+                  : ""
+              }
+              textAlignProp={
+                nodeProps?.cssProperties?.[currentViewport]?.textAlign
+                  ? nodeProps?.cssProperties?.[currentViewport]?.textAlign
+                  : ""
+              }
+              textTransformProp={
+                nodeProps?.cssProperties?.[currentViewport]?.textTransform
+                  ? nodeProps?.cssProperties?.[currentViewport]?.textTransform
+                  : ""
+              }
+              lineHeightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.lineHeight
+                  ? nodeProps?.cssProperties?.[currentViewport]?.lineHeight
+                  : ""
+              }
+              letterSpaceProp={
+                nodeProps?.cssProperties?.[currentViewport]?.letterSpacing
+                  ? nodeProps?.cssProperties?.[currentViewport]?.letterSpacing
+                  : ""
+              }
+              textIndentProp={
+                nodeProps?.cssProperties?.[currentViewport]?.textIndent
+                  ? nodeProps?.cssProperties?.[currentViewport]?.textIndent
+                  : ""
+              }
+              decorationLineProp={
+                nodeProps?.cssProperties?.[currentViewport]?.textDecorationLine
+                  ? nodeProps?.cssProperties?.[currentViewport]?.textDecorationLine
+                  : ""
+              }
+              decorationColorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.textDecorationColor
+                  ? nodeProps?.cssProperties?.[currentViewport]?.textDecorationColor
+                  : ""
+              }
+              decorationStyleProp={
+                nodeProps?.cssProperties?.[currentViewport]?.textDecorationStyle
+                  ? nodeProps?.cssProperties?.[currentViewport]?.textDecorationStyle
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+              decorationThicknessProp={""}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("padding-margin") && (
+          <AccordionItem value="padding-margin">
+            <StylePaddingMargin
+              paddingTopProp={
+                nodeProps?.cssProperties?.[currentViewport]?.paddingTop
+                  ? nodeProps?.cssProperties?.[currentViewport]?.paddingTop
+                  : ""
+              }
+              paddingBottomProp={
+                nodeProps?.cssProperties?.[currentViewport]?.paddingBottom
+                  ? nodeProps?.cssProperties?.[currentViewport]?.paddingBottom
+                  : ""
+              }
+              paddingLeftProp={
+                nodeProps?.cssProperties?.[currentViewport]?.paddingLeft
+                  ? nodeProps?.cssProperties?.[currentViewport]?.paddingLeft
+                  : ""
+              }
+              paddingRightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.paddingRight
+                  ? nodeProps?.cssProperties?.[currentViewport]?.paddingRight
+                  : ""
+              }
+              marginTopProp={
+                nodeProps?.cssProperties?.[currentViewport]?.marginTop
+                  ? nodeProps?.cssProperties?.[currentViewport]?.marginTop
+                  : ""
+              }
+              marginBottomProp={
+                nodeProps?.cssProperties?.[currentViewport]?.marginBottom
+                  ? nodeProps?.cssProperties?.[currentViewport]?.marginBottom
+                  : ""
+              }
+              marginLeftProp={
+                nodeProps?.cssProperties?.[currentViewport]?.marginLeft
+                  ? nodeProps?.cssProperties?.[currentViewport]?.marginLeft
+                  : ""
+              }
+              marginRightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.marginRight
+                  ? nodeProps?.cssProperties?.[currentViewport]?.marginRight
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("border-corners") && (
+          <AccordionItem value="border-corners">
+            <StyleBordersCorners
+              borderTopWidthProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderTopWidth
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderTopWidth
+                  : ""
+              }
+              borderTopColorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderTopColor
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderTopColor
+                  : ""
+              }
+              borderRightWidthProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderBottomWidth
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderBottomWidth
+                  : ""
+              }
+              borderRightColorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderRightColor
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderRightColor
+                  : ""
+              }
+              borderBottomWidthProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderBottomWidth
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderBottomWidth
+                  : ""
+              }
+              borderBottomColorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderBottomColor
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderBottomColor
+                  : ""
+              }
+              borderLeftWidthProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderLeftWidth
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderLeftWidth
+                  : ""
+              }
+              borderLeftColorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderLeftColor
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderLeftColor
+                  : ""
+              }
+              borderTopLeftProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderTopLeftRadius
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderTopLeftRadius
+                  : ""
+              }
+              borderTopRightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderTopRightRadius
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderTopRightRadius
+                  : ""
+              }
+              borderBottomRightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderBottomRightRadius
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderBottomRightRadius
+                  : ""
+              }
+              borderBottomLeftProp={
+                nodeProps?.cssProperties?.[currentViewport]?.borderBottomLeftRadius
+                  ? nodeProps?.cssProperties?.[currentViewport]?.borderBottomLeftRadius
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("display") && (
 
-        <StylePaddingMargin
-          paddingTopProp={
-            nodeProps?.cssProperties?.paddingTop
-              ? nodeProps?.cssProperties?.paddingTop
-              : ""
-          }
-          paddingBottomProp={
-            nodeProps?.cssProperties?.paddingBottom
-              ? nodeProps?.cssProperties?.paddingBottom
-              : ""
-          }
-          paddingLeftProp={
-            nodeProps?.cssProperties?.paddingLeft
-              ? nodeProps?.cssProperties?.paddingLeft
-              : ""
-          }
-          paddingRightProp={
-            nodeProps?.cssProperties?.paddingRight
-              ? nodeProps?.cssProperties?.paddingRight
-              : ""
-          }
-          marginTopProp={
-            nodeProps?.cssProperties?.marginTop
-              ? nodeProps?.cssProperties?.marginTop
-              : ""
-          }
-          marginBottomProp={
-            nodeProps?.cssProperties?.marginBottom
-              ? nodeProps?.cssProperties?.marginBottom
-              : ""
-          }
-          marginLeftProp={
-            nodeProps?.cssProperties?.marginLeft
-              ? nodeProps?.cssProperties?.marginLeft
-              : ""
-          }
-          marginRightProp={
-            nodeProps?.cssProperties?.marginRight
-              ? nodeProps?.cssProperties?.marginRight
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
+          <AccordionItem value="display">
+            <StyleDisplay
+              displayProp={
+                nodeProps?.cssProperties?.[currentViewport]?.display
+                  ? nodeProps?.cssProperties?.[currentViewport]?.display
+                  : ""
+              }
+              alignPlaceContentProp={
+                nodeProps?.cssProperties?.[currentViewport]?.alignContent
+                  ? nodeProps?.cssProperties?.[currentViewport]?.alignContent
+                  : ""
+              }
+              justifyPlaceContentProp={
+                nodeProps?.cssProperties?.[currentViewport]?.justifyContent
+                  ? nodeProps?.cssProperties?.[currentViewport]?.justifyContent
+                  : ""
+              }
+              alignPlaceItemsProp={
+                nodeProps?.cssProperties?.[currentViewport]?.alignItems
+                  ? nodeProps?.cssProperties?.[currentViewport]?.alignItems
+                  : ""
+              }
+              justifyPlaceItemsProp={
+                nodeProps?.cssProperties?.[currentViewport]?.justifyItems
+                  ? nodeProps?.cssProperties?.[currentViewport]?.justifyItems
+                  : ""
+              }
+              overflowProp={
+                nodeProps?.cssProperties?.[currentViewport]?.overflow
+                  ? nodeProps?.cssProperties?.[currentViewport]?.overflow
+                  : ""
+              }
+              grid={{
+                rowProp: nodeProps?.cssProperties?.[currentViewport]?.gridRow
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridRow
+                  : "",
+                columnProp: nodeProps?.cssProperties?.[currentViewport]?.gridColumn
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridColumn
+                  : "",
+                rowGapProp: nodeProps?.cssProperties?.rowGap
+                  ? nodeProps?.cssProperties?.[currentViewport]?.rowGap
+                  : "",
+                columnGapProp: nodeProps?.cssProperties?.columnGap
+                  ? nodeProps?.cssProperties?.[currentViewport]?.columnGap
+                  : "",
+                autoFlowProp: nodeProps?.cssProperties?.gridAutoFlow
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridAutoFlow
+                  : "",
+              }}
+              gridChild={{
+                rowStartProp: nodeProps?.cssProperties?.[currentViewport]?.gridRowStart
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridRowStart
+                  : "",
+                columnStartProp: nodeProps?.cssProperties?.[currentViewport]?.gridColumnStart
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridColumnStart
+                  : "",
+                rowEndProp: nodeProps?.cssProperties?.[currentViewport]?.gridRowEnd
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridRowEnd
+                  : "",
+                columnEndProp: nodeProps?.cssProperties?.[currentViewport]?.gridColumnEnd
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridColumnEnd
+                  : "",
+                alignSelfProp: nodeProps?.cssProperties?.[currentViewport]?.alignSelf
+                  ? nodeProps?.cssProperties?.[currentViewport]?.alignSelf
+                  : "",
+                justifySelfProp: nodeProps?.cssProperties?.[currentViewport]?.justifySelf
+                  ? nodeProps?.cssProperties?.[currentViewport]?.justifySelf
+                  : "",
+                orderProp: nodeProps?.cssProperties?.[currentViewport]?.order
+                  ? nodeProps?.cssProperties?.[currentViewport]?.order
+                  : "",
+              }}
+              flex={{
+                flexDirectionProp: nodeProps?.cssProperties?.[currentViewport]?.flexDirection
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexDirection
+                  : "",
+                flexWrapProp: nodeProps?.cssProperties?.[currentViewport]?.flexWrap
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexWrap
+                  : "",
+              }}
+              flexChild={{
+                flexGrowProp: nodeProps?.cssProperties?.[currentViewport]?.flexGrow
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexGrow
+                  : "",
+                flexShrinkProp: nodeProps?.cssProperties?.[currentViewport]?.flexShrink
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexShrink
+                  : "",
+                basisProp: nodeProps?.cssProperties?.[currentViewport]?.flexBasis
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexBasis
+                  : "",
+                alignSelfProp: nodeProps?.cssProperties?.[currentViewport]?.alignSelf
+                  ? nodeProps?.cssProperties?.[currentViewport]?.alignSelf
+                  : "",
+                orderProp: nodeProps?.cssProperties?.[currentViewport]?.order
+                  ? nodeProps?.cssProperties?.[currentViewport]?.order
+                  : "",
+              }}
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("self-layout") && (
 
-        <StyleBordersCorners
-          borderTopWidthProp={
-            nodeProps?.cssProperties?.borderTopWidth
-              ? nodeProps?.cssProperties?.borderTopWidth
-              : ""
-          }
-          borderTopColorProp={
-            nodeProps?.cssProperties?.borderTopColor
-              ? nodeProps?.cssProperties?.borderTopColor
-              : ""
-          }
-          borderRightWidthProp={
-            nodeProps?.cssProperties?.borderBottomWidth
-              ? nodeProps?.cssProperties?.borderBottomWidth
-              : ""
-          }
-          borderRightColorProp={
-            nodeProps?.cssProperties?.borderRightColor
-              ? nodeProps?.cssProperties?.borderRightColor
-              : ""
-          }
-          borderBottomWidthProp={
-            nodeProps?.cssProperties?.borderBottomWidth
-              ? nodeProps?.cssProperties?.borderBottomWidth
-              : ""
-          }
-          borderBottomColorProp={
-            nodeProps?.cssProperties?.borderBottomColor
-              ? nodeProps?.cssProperties?.borderBottomColor
-              : ""
-          }
-          borderLeftWidthProp={
-            nodeProps?.cssProperties?.borderLeftWidth
-              ? nodeProps?.cssProperties?.borderLeftWidth
-              : ""
-          }
-          borderLeftColorProp={
-            nodeProps?.cssProperties?.borderLeftColor
-              ? nodeProps?.cssProperties?.borderLeftColor
-              : ""
-          }
-          borderTopLeftProp={
-            nodeProps?.cssProperties?.borderTopLeftRadius
-              ? nodeProps?.cssProperties?.borderTopLeftRadius
-              : ""
-          }
-          borderTopRightProp={
-            nodeProps?.cssProperties?.borderTopRightRadius
-              ? nodeProps?.cssProperties?.borderTopRightRadius
-              : ""
-          }
-          borderBottomRightProp={
-            nodeProps?.cssProperties?.borderBottomRightRadius
-              ? nodeProps?.cssProperties?.borderBottomRightRadius
-              : ""
-          }
-          borderBottomLeftProp={
-            nodeProps?.cssProperties?.borderBottomLeftRadius
-              ? nodeProps?.cssProperties?.borderBottomLeftRadius
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
+          <AccordionItem value="self-layout">
+            <StyleSelfLayout
+              parentdisplay={parentProps?.cssProperties?.[currentViewport]?.display}
+              display={nodeProps?.cssProperties?.[currentViewport]?.display}
+              flexGrowProp={
+                nodeProps?.cssProperties?.[currentViewport]?.flexGrow
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexGrow
+                  : ""
+              }
+              flexShrinkProp={
+                nodeProps?.cssProperties?.[currentViewport]?.flexShrink
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexShrink
+                  : ""
+              }
+              flexBasisProp={
+                nodeProps?.cssProperties?.[currentViewport]?.flexBasis
+                  ? nodeProps?.cssProperties?.[currentViewport]?.flexBasis
+                  : ""
+              }
+              alignSelfProp={
+                nodeProps?.cssProperties?.[currentViewport]?.alignSelf
+                  ? nodeProps?.cssProperties?.[currentViewport]?.alignSelf
+                  : ""
+              }
+              orderProp={
+                nodeProps?.cssProperties?.[currentViewport]?.order
+                  ? nodeProps?.cssProperties?.[currentViewport]?.order
+                  : ""
+              }
+              gridRowStartProp={
+                nodeProps?.cssProperties?.[currentViewport]?.gridRowStart
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridRowStart
+                  : ""
+              }
+              gridRowEndProp={
+                nodeProps?.cssProperties?.[currentViewport]?.gridRowEnd
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridRowEnd
+                  : ""
+              }
+              gridColumnStartProp={
+                nodeProps?.cssProperties?.[currentViewport]?.gridColumnStart
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridColumnStart
+                  : ""
+              }
+              gridColumnEndProp={
+                nodeProps?.cssProperties?.[currentViewport]?.gridColumnEnd
+                  ? nodeProps?.cssProperties?.[currentViewport]?.gridColumnEnd
+                  : ""
+              }
+              justifySelfProp={
+                nodeProps?.cssProperties?.[currentViewport]?.justifySelf
+                  ? nodeProps?.cssProperties?.[currentViewport]?.justifySelf
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("backgrounds") && (
 
-        <StyleDisplay
-          displayProp={
-            nodeProps?.cssProperties?.display
-              ? nodeProps?.cssProperties?.display
-              : ""
-          }
-          alignPlaceContentProp={
-            nodeProps?.cssProperties?.alignContent
-              ? nodeProps?.cssProperties?.alignContent
-              : ""
-          }
-          justifyPlaceContentProp={
-            nodeProps?.cssProperties?.justifyContent
-              ? nodeProps?.cssProperties?.justifyContent
-              : ""
-          }
-          alignPlaceItemsProp={
-            nodeProps?.cssProperties?.alignItems
-              ? nodeProps?.cssProperties?.alignItems
-              : ""
-          }
-          justifyPlaceItemsProp={
-            nodeProps?.cssProperties?.justifyItems
-              ? nodeProps?.cssProperties?.justifyItems
-              : ""
-          }
-          overflowProp={
-            nodeProps?.cssProperties?.overflow
-              ? nodeProps?.cssProperties?.overflow
-              : ""
-          }
-          grid={{
-            rowProp: nodeProps?.cssProperties?.gridRow
-              ? nodeProps?.cssProperties?.gridRow
-              : "",
-            columnProp: nodeProps?.cssProperties?.gridColumn
-              ? nodeProps?.cssProperties?.gridColumn
-              : "",
-            rowGapProp: nodeProps?.cssProperties?.rowGap
-              ? nodeProps?.cssProperties?.rowGap
-              : "",
-            columnGapProp: nodeProps?.cssProperties?.columnGap
-              ? nodeProps?.cssProperties?.columnGap
-              : "",
-            autoFlowProp: nodeProps?.cssProperties?.gridAutoFlow
-              ? nodeProps?.cssProperties?.gridAutoFlow
-              : "",
-          }}
-          gridChild={{
-            rowStartProp: nodeProps?.cssProperties?.gridRowStart
-              ? nodeProps?.cssProperties?.gridRowStart
-              : "",
-            columnStartProp: nodeProps?.cssProperties?.gridColumnStart
-              ? nodeProps?.cssProperties?.gridColumnStart
-              : "",
-            rowEndProp: nodeProps?.cssProperties?.gridRowEnd
-              ? nodeProps?.cssProperties?.gridRowEnd
-              : "",
-            columnEndProp: nodeProps?.cssProperties?.gridColumnEnd
-              ? nodeProps?.cssProperties?.gridColumnEnd
-              : "",
-            alignSelfProp: nodeProps?.cssProperties?.alignSelf
-              ? nodeProps?.cssProperties?.alignSelf
-              : "",
-            justifySelfProp: nodeProps?.cssProperties?.justifySelf
-              ? nodeProps?.cssProperties?.justifySelf
-              : "",
-            orderProp: nodeProps?.cssProperties?.order
-              ? nodeProps?.cssProperties?.order
-              : "",
-          }}
-          flex={{
-            flexDirectionProp: nodeProps?.cssProperties?.flexDirection
-              ? nodeProps?.cssProperties?.flexDirection
-              : "",
-            flexWrapProp: nodeProps?.cssProperties?.flexWrap
-              ? nodeProps?.cssProperties?.flexWrap
-              : "",
-          }}
-          flexChild={{
-            flexGrowProp: nodeProps?.cssProperties?.flexGrow
-              ? nodeProps?.cssProperties?.flexGrow
-              : "",
-            flexShrinkProp: nodeProps?.cssProperties?.flexShrink
-              ? nodeProps?.cssProperties?.flexShrink
-              : "",
-            basisProp: nodeProps?.cssProperties?.flexBasis
-              ? nodeProps?.cssProperties?.flexBasis
-              : "",
-            alignSelfProp: nodeProps?.cssProperties?.alignSelf
-              ? nodeProps?.cssProperties?.alignSelf
-              : "",
-            orderProp: nodeProps?.cssProperties?.order
-              ? nodeProps?.cssProperties?.order
-              : "",
-          }}
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
-        <StyleSelfLayout
-          parentdisplay={parentProps?.cssProperties?.display}
-          display={nodeProps?.cssProperties?.display}
-          flexGrowProp={
-            nodeProps?.cssProperties?.flexGrow
-              ? nodeProps?.cssProperties?.flexGrow
-              : ""
-          }
-          flexShrinkProp={
-            nodeProps?.cssProperties?.flexShrink
-              ? nodeProps?.cssProperties?.flexShrink
-              : ""
-          }
-          flexBasisProp={
-            nodeProps?.cssProperties?.flexBasis
-              ? nodeProps?.cssProperties?.flexBasis
-              : ""
-          }
-          alignSelfProp={
-            nodeProps?.cssProperties?.alignSelf
-              ? nodeProps?.cssProperties?.alignSelf
-              : ""
-          }
-          orderProp={
-            nodeProps?.cssProperties?.order
-              ? nodeProps?.cssProperties?.order
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
-        <StyleBackground
-          backgroundImageProp={
-            nodeProps?.cssProperties?.backgroundImage
-              ? nodeProps?.cssProperties?.backgroundImage
-              : ""
-          }
-          backgroundColorProp={
-            nodeProps?.cssProperties?.backgroundColor
-              ? nodeProps?.cssProperties?.backgroundColor
-              : ""
-          }
-          backgroundPositionProp={
-            nodeProps?.cssProperties?.backgroundPosition
-              ? nodeProps?.cssProperties?.backgroundPosition
-              : ""
-          }
-          backgroundRepeatProp={
-            nodeProps?.cssProperties?.backgroundRepeat
-              ? nodeProps?.cssProperties?.backgroundRepeat
-              : ""
-          }
-          backgroundSizeProp={
-            nodeProps?.cssProperties?.backgroundSize
-              ? nodeProps?.cssProperties?.backgroundSize
-              : ""
-          }
-          backgroundClipProp={
-            nodeProps?.cssProperties?.backgroundClip
-              ? nodeProps?.cssProperties?.backgroundClip
-              : ""
-          }
-          backgroundGradientProp={
-            nodeProps?.cssProperties?.background
-              ? nodeProps?.cssProperties?.background
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
-        <StylePosition
-          positionProp={
-            nodeProps?.cssProperties?.position
-              ? nodeProps?.cssProperties?.position
-              : ""
-          }
-          topProp={
-            nodeProps?.cssProperties?.top ? nodeProps?.cssProperties?.top : ""
-          }
-          bottomProp={
-            nodeProps?.cssProperties?.bottom
-              ? nodeProps?.cssProperties?.bottom
-              : ""
-          }
-          leftProp={
-            nodeProps?.cssProperties?.left ? nodeProps?.cssProperties?.left : ""
-          }
-          rightProp={
-            nodeProps?.cssProperties?.right
-              ? nodeProps?.cssProperties?.right
-              : ""
-          }
-          zIndexProp={
-            nodeProps?.cssProperties?.zIndex
-              ? nodeProps?.cssProperties?.zIndex
-              : ""
-          }
-          setProp={(key: string, val: string) => setProp(key, val)}
-        />
+          <AccordionItem value="backgrounds">
+
+            <StyleBackground
+              backgroundImageProp={
+                nodeProps?.cssProperties?.[currentViewport]?.backgroundImage
+                  ? nodeProps?.cssProperties?.[currentViewport]?.backgroundImage
+                  : ""
+              }
+              backgroundColorProp={
+                nodeProps?.cssProperties?.[currentViewport]?.backgroundColor
+                  ? nodeProps?.cssProperties?.[currentViewport]?.backgroundColor
+                  : ""
+              }
+              backgroundPositionProp={
+                nodeProps?.cssProperties?.[currentViewport]?.backgroundPosition
+                  ? nodeProps?.cssProperties?.[currentViewport]?.backgroundPosition
+                  : ""
+              }
+              backgroundRepeatProp={
+                nodeProps?.cssProperties?.[currentViewport]?.backgroundRepeat
+                  ? nodeProps?.cssProperties?.[currentViewport]?.backgroundRepeat
+                  : ""
+              }
+              backgroundSizeProp={
+                nodeProps?.cssProperties?.[currentViewport]?.backgroundSize
+                  ? nodeProps?.cssProperties?.[currentViewport]?.backgroundSize
+                  : ""
+              }
+              backgroundClipProp={
+                nodeProps?.cssProperties?.[currentViewport]?.backgroundClip
+                  ? nodeProps?.cssProperties?.[currentViewport]?.backgroundClip
+                  : ""
+              }
+              backgroundGradientProp={
+                nodeProps?.cssProperties?.[currentViewport]?.background
+                  ? nodeProps?.cssProperties?.[currentViewport]?.background
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+        {!disabledItems.includes("position") && (
+          <AccordionItem value="position">
+            <StylePosition
+              positionProp={
+                nodeProps?.cssProperties?.[currentViewport]?.position
+                  ? nodeProps?.cssProperties?.[currentViewport]?.position
+                  : ""
+              }
+              topProp={
+                nodeProps?.cssProperties?.[currentViewport]?.top ? nodeProps?.cssProperties?.[currentViewport]?.top : ""
+              }
+              bottomProp={
+                nodeProps?.cssProperties?.[currentViewport]?.bottom
+                  ? nodeProps?.cssProperties?.[currentViewport]?.bottom
+                  : ""
+              }
+              leftProp={
+                nodeProps?.cssProperties?.[currentViewport]?.left ? nodeProps?.cssProperties?.[currentViewport]?.left : ""
+              }
+              rightProp={
+                nodeProps?.cssProperties?.[currentViewport]?.right
+                  ? nodeProps?.cssProperties?.[currentViewport]?.right
+                  : ""
+              }
+              zIndexProp={
+                nodeProps?.cssProperties?.[currentViewport]?.zIndex
+                  ? nodeProps?.cssProperties?.[currentViewport]?.zIndex
+                  : ""
+              }
+              setProp={(key: string, val: string) => setProp(key, val)}
+            />
+          </AccordionItem>
+        )}
+
       </Accordion>
     </>
   );
 };
-
-export default HOneSettings;

@@ -315,7 +315,7 @@ const MiddleHeader = () => {
           <FaMobileAlt className="h-5 w-5 text-white" />
         </Button>
       </div>
-      <div className="flex justify-center items-center">
+      {/* <div className="flex justify-center items-center">
         <Input
           type="number"
           className="h-6 w-14 px-1 text-xs text-white bg-transparent border rounded-md font-semibold"
@@ -341,7 +341,7 @@ const MiddleHeader = () => {
             // clearTimeout(timeout);
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

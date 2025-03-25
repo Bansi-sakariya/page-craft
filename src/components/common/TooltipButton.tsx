@@ -1,5 +1,6 @@
 "use client";
 
+import React, { forwardRef } from "react";
 import {
   TooltipProvider,
   Tooltip,
@@ -9,25 +10,21 @@ import {
 import { Button, ButtonProps } from "@/components/ui/button";
 
 interface TooltipButtonProps extends ButtonProps {
-  className: string;
-  side: "left" | "top" | "right" | "bottom" | undefined;
+  className?: string;
+  side?: "left" | "top" | "right" | "bottom";
   text: string;
   btnContent: JSX.Element;
 }
 
-const TooltipButton = ({
-  className,
-  btnContent,
-  side,
-  text,
-  ...props
-}: TooltipButtonProps) => {
-  return (
-    <>
+// Use forwardRef to allow the component to properly handle refs
+const TooltipButton = forwardRef<HTMLButtonElement, TooltipButtonProps>(
+  ({ className, btnContent, side = "top", text, ...props }, ref) => {
+    return (
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button className={className} {...props}>
+            {/* Forward the ref to the Button component */}
+            <Button ref={ref} className={className} {...props}>
               {btnContent}
             </Button>
           </TooltipTrigger>
@@ -36,8 +33,10 @@ const TooltipButton = ({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </>
-  );
-};
+    );
+  }
+);
+
+TooltipButton.displayName = "TooltipButton"; // Required for forwardRef components
 
 export default TooltipButton;

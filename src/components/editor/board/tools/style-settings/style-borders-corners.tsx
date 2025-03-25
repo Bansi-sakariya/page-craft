@@ -48,7 +48,7 @@ const StyleBordersCorners = ({
   const [borderWidthLock, setBorderWidthLock] = useState(true);
   const [borderCornerLock, setBorderCornerLock] = useState(true);
 
-  console.log(borderTopWidthProp);
+  // console.log(borderTopWidthProp);
 
   return (
     <AccordionItem value="border-corners">

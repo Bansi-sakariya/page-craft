@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import FontProvider from "@/provider/font-provider";
+ 
 import { inter, poppins, roboto } from "@/lib/font";
 import { cn } from "@/lib/utils";
 

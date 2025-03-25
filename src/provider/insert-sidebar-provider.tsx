@@ -17,3 +17,4 @@ const InsertSidebarProvider = ({ children }: InsertSidebarProviderProps) => {
 };
 
 export default InsertSidebarProvider;
+      

@@ -47,6 +47,7 @@ import { useContext } from "react";
 import InsertSidebarToggleContext from "@/context/insert-sidebar-toggle-context";
 import { IoLayers } from "react-icons/io5";
 import { cn } from "@/lib/utils";
+import InsertLayerContext from "@/context/insert-layer-context";
 
 type SubMenuProps = {
   title: string;
@@ -90,6 +91,8 @@ const SubMenu = ({ title, icon, data }: SubMenuProps) => {
 
 const LeftHeader = () => {
   const { isOpen, setIsOpen } = useContext(InsertSidebarToggleContext);
+  const {Openis, setOpenis} = useContext(InsertLayerContext);
+
 
   return (
     <div className="flex items-center">
@@ -171,40 +174,50 @@ const LeftHeader = () => {
       </DropdownMenu>
 
       <Button
-        className={cn(
-          "bg-transparent hover:bg-transparent px-2 h-8 group/insert mr-3",
-          isOpen ? "text-white" : ""
-        )}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span
-          className={cn(
-            "rounded-sm text-slate-900 group-hover/insert:bg-white mr-1.5",
-            isOpen ? "bg-white" : "bg-muted-foreground"
-          )}
-        >
-          <GrFormAdd className="h-5 w-5" />
-        </span>
-        <span
-          className={cn(
-            "group-hover/insert:text-white font-bold",
-            isOpen ? "text-white" : "text-muted-foreground"
-          )}
-        >
-          Insert
-        </span>
-      </Button>
+  className={cn(
+    "bg-transparent hover:bg-transparent px-2 h-8 group/insert mr-3",
+    isOpen ? "text-white" : ""
+  )}
+  onClick={() => {
+    setIsOpen(!isOpen);
+    setOpenis(false);
+  }}
+>
+  <span
+    className={cn(
+      "rounded-sm text-slate-900 group-hover/insert:bg-white mr-1.5",
+      isOpen ? "bg-white" : "bg-muted-foreground"
+    )}
+  >
+    <GrFormAdd className="h-5 w-5" />
+  </span>
+  <span
+    className={cn(
+      "group-hover/insert:text-white font-bold",
+      isOpen ? "text-white" : "text-muted-foreground"
+    )}
+  >
+    Insert
+  </span>
+</Button>
 
-      <Button className="bg-transparent hover:bg-transparent px-2 h-8 group/layout mr-3">
-        <span className="rounded-sm p-1 bg-muted-foreground text-slate-900 group-hover/layout:bg-white mr-1.5">
-          <IoLayers className="h-3.5 w-3.5" />
-        </span>
-        <span className="text-muted-foreground group-hover/layout:text-white font-bold">
-          Layers
-        </span>
-      </Button>
-
-      <Button className="bg-transparent hover:bg-transparent px-2 h-8 group/cms mr-3">
+<Button
+  className={cn(
+    "bg-transparent hover:bg-transparent px-2 h-8 group/layout mr-3"
+  )}
+  onClick={() => {
+    setOpenis(!Openis);
+    setIsOpen(false);
+  }}
+>
+  <span className="rounded-sm p-1 bg-muted-foreground text-slate-900 group-hover/layout:bg-white mr-1.5">
+    <IoLayers className="h-3.5 w-3.5" />
+  </span>
+  <span className="text-muted-foreground group-hover/layout:text-white font-bold">
+    Layers
+  </span>
+</Button>
+     <Button className="bg-transparent hover:bg-transparent px-2 h-8 group/cms mr-3">
         <span className="rounded-sm p-1 bg-muted-foreground text-slate-900 group-hover/cms:bg-white mr-1.5">
           <BsDatabaseFill className="h-3.5 w-3.5" />
         </span>

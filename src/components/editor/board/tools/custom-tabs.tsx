@@ -27,7 +27,7 @@ const CustomTabs = ({
   width,
   tablistwidth,
   value,
-  setValue,
+  setValue = () => {},
 }: CustomTabsProps) => {
   return (
     <>

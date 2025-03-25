@@ -7,6 +7,11 @@ export type InsertSidebarToggleContext = {
   isOpen: boolean;
   setIsOpen: Function;
 };
+export type InsertLayerContext = {
+  Openis: boolean;
+  setOpenis: Function;
+};
+
 
 export type DeviceType =
   | "Desktop"
